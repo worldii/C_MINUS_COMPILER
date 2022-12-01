@@ -15,14 +15,17 @@ OBJS = main.o util.o lex.yy.o
 
 all: hw2_binary
 
-hw1_binary : $(OBJS)
+hw2_binary : $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) -lfl
 
-main.o: main.c globals.h util.h 
+main.o: main.c globals.h util.h scan.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 util.o: util.c util.h globals.h
 	$(CC) $(CFLAGS) -c util.c
+
+#scan.o : scan.c scan.h globals.h
+#	$(CC) $(CFLAGS) -c scan.c
 
 
 #parse.obj: parse.c parse.h scan.h globals.h util.h

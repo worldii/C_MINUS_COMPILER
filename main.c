@@ -49,19 +49,18 @@ int Error = FALSE;
 main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
   char pgm[120]; /* source code file name */
-  //char pgm2[120];
+
   if (argc != 2)
-    { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
-      exit(1);
-    }
+  { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
+    exit(1);
+  }
   strcpy(pgm,argv[1]) ;
 
   if (strchr (pgm, '.') == NULL)
      strcat(pgm,".tny");
-  //strcpy(pgm2,pgm);
    
-  source = fopen(pgm,"r");
-  if (source==NULL)
+  source = fopen("test1.c","r");
+  if (source == NULL)
   { fprintf(stderr,"File %s not found\n",pgm);
     exit(1);
   }
@@ -78,8 +77,8 @@ main( int argc, char * argv[] )
       break;
     }
   }*/
-  listing = fopen("hw1_20182202.txt", "wt");
-  //strncpy(pgm2, pgm, idx);
+
+  listing = fopen("test1_20182202.txt", "wt");
 
 #if NO_PARSE
   fprintf(listing,"TINY COMPILATION: hw1_20182202.txt\n");
