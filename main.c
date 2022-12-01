@@ -8,9 +8,9 @@
 #include "globals.h"
 
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
-#define NO_PARSE TRUE
+#define NO_PARSE FALSE
 /* set NO_ANALYZE to TRUE to get a parser-only compiler */
-#define NO_ANALYZE FALSE
+#define NO_ANALYZE TRUE
 
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
@@ -19,6 +19,7 @@
 
 #include "util.h"
 #if NO_PARSE
+// Flex 이용할 것이므로 scan 은 필요가 없음.
 //#include "scan.h"
 #else
 #include "parse.h"
@@ -64,20 +65,21 @@ main( int argc, char * argv[] )
   { fprintf(stderr,"File %s not found\n",pgm);
     exit(1);
   }
-  //listing = stdout; /* send listing to screen */
-//  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
-/*for (int i = 0 ;i < strlen(pgm2) ; i++) 
-{
-  if (pgm2[i] == '.')
-  {
-    pgm2[i] = 0;
-    strcat(pgm2, "_20182202.txt");
-    break;
-  }
-}*/
-listing = fopen("hw1_20182202.txt", "wt");
-//strncpy(pgm2, pgm, idx);
 
+  //listing = stdout; /* send listing to screen */
+  //  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
+
+  /*for (int i = 0 ;i < strlen(pgm2) ; i++) 
+  {
+    if (pgm2[i] == '.')
+    {
+      pgm2[i] = 0;
+      strcat(pgm2, "_20182202.txt");
+      break;
+    }
+  }*/
+  listing = fopen("hw1_20182202.txt", "wt");
+  //strncpy(pgm2, pgm, idx);
 
 #if NO_PARSE
   fprintf(listing,"TINY COMPILATION: hw1_20182202.txt\n");

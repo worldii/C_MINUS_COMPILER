@@ -13,7 +13,7 @@ OBJS = main.o util.o lex.yy.o
 #tiny.exe: $(OBJS)
 #	$(CC) $(CFLAGS) -etiny $(OBJS)
 
-all: hw1_binary
+all: hw2_binary
 
 hw1_binary : $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) -lfl
