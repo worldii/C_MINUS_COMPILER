@@ -1,4 +1,4 @@
-# SCANNER
+# Scanner, Parser
 ## FLEX 
 Flex 2.6.0
 ## BISON

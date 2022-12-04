@@ -59,6 +59,8 @@
 #define YYPULL 1
 
 
+
+
 /* Copy the first part of user declarations.  */
 #line 7 "cminus.y" /* yacc.c:339  */
 
@@ -73,7 +75,7 @@
 static char * savedName; /* for use in assignments */
 static int savedLineNo;  /* ditto */
 static TreeNode * savedTree; /* stores syntax tree for later return */
-
+static int yylex(void);
 
 #line 81 "cminus.tab.c" /* yacc.c:339  */
 
@@ -1727,7 +1729,11 @@ int yyerror(char * message)
  * compatible with ealier versions of the TINY scanner
  */
 static int yylex(void)
-{ return getToken(); }
+{ 
+  int token = getToken();
+  fprintf(listing,"Debug: %d\n", token);
+
+  return token; }
 
 TreeNode * parse(void)
 { yyparse();

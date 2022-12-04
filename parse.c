@@ -10,7 +10,7 @@
 #include "scan.h"
 #include "parse.h"
 
-static TokenType token; /* holds current token */
+//static TokenType token; /* holds current token */
 
 /* function prototypes for recursive calls */
 static TreeNode * stmt_sequence(void);

@@ -1,5 +1,6 @@
 /****************************************************/
 /* File: globals.h                                  */
+/* Yacc/Bison Version                               */
 /* Global types and vars for TINY compiler          */
 /* must come before other include files             */
 /* Compiler Construction: Principles and Practice   */
@@ -14,6 +15,27 @@
 #include <ctype.h>
 #include <string.h>
 
+/* Yacc/Bison generates internally its own values
+ * for the tokens. Other files can access these values
+ * by including the tab.h file generated using the
+ * Yacc/Bison option -d ("generate header")
+ *
+ * The YYPARSER flag prevents inclusion of the tab.h
+ * into the Yacc/Bison output itself
+ */
+
+#ifndef YYPARSER
+
+/* the name of the following file may change */
+#include "cminus.tab.h"
+
+/* ENDFILE is implicitly defined by Yacc/Bison,
+ * and not included in the tab.h file
+ */
+#define ENDFILE 0
+
+#endif
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -25,22 +47,10 @@
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
 
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE,ERROR,
-    /* reserved words */
-    IF,ELSE,INT, VOID, RETURN, WHILE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    PLUS,MINUS,TIMES,OVER,
-    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
-    SEMI,COMMA, 
-    LPAREN,RPAREN, // ()
-    LBRACKET, RBRACKET, // []
-    LBRACE,RBRACE, // {}, 
-    COMMENT, COMMENTERR
-   } TokenType;
+/* Yacc/Bison generates its own integer values
+ * for tokens
+ */
+typedef int TokenType; 
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -52,12 +62,16 @@ extern int lineno; /* source line number for listing */
 /***********   Syntax tree for parsing ************/
 /**************************************************/
 
-typedef enum {StmtK,ExpK} NodeKind;
-typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
-typedef enum {OpK,ConstK,IdK} ExpKind;
+typedef enum {StmtK,ExpK,DecK,TypeK,ParamK,OptK} NodeKind;
+typedef enum {CompoundK,IfK,IfelseK,WhileK,ReturnK} StmtKind;
+typedef enum {AssignK,VariableK,OpK,ConstK,CallK,IdK} ExpKind;
+typedef enum {VarK,FunK} DecKind;
+typedef enum {IntK,VoidK} TypeKind;
+typedef enum {SingleK,ArrayK} ParamKind;
+typedef enum {RelopK,AddopK,MulopK} OptKind;
 
 /* ExpType is used for type checking */
-typedef enum {Void,Integer,Boolean} ExpType;
+typedef enum {Void,Integer} ExpType;
 
 #define MAXCHILDREN 3
 
@@ -66,7 +80,14 @@ typedef struct treeNode
      struct treeNode * sibling;
      int lineno;
      NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp;} kind;
+     union {
+       StmtKind stmt; 
+	     ExpKind exp; 
+	     DecKind dec; 
+	     TypeKind type; 
+	     ParamKind prm;
+     	 OptKind op;  } 
+       kind;
      union { TokenType op;
              int val;
              char * name; } attr;
