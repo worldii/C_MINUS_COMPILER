@@ -17,31 +17,36 @@ static char* token_name[100] = {
   [ID] ="ID",  [NUM] = "NUM",  [PLUS] = "+", [MINUS] = "-", [TIMES] = "*", [OVER] = "/", 
   [LT] = "<", [LE] = "<=",  [GT] = ">",  [GE]= ">=", [EQ] ="==" , [NOTEQ] = "!=", [ASSIGN] = "=", 
   [SEMI] = ";", [COMMA] = ",", [LPAREN] = "(", [RPAREN] = ")", [LBRACKET] = "[", [RBRACKET] = "]", 
-  [LBRACE]= "{", [RBRACE]= "}" , [ENDFILE] = "EOF"
+  [LBRACE]= "{", [RBRACE]= "}" , [ENDFILE] = "ENDFILE"
 };
 
 void printToken( TokenType token, const char* tokenString )
 { 
 
   switch (token)
-  { case IF:case ELSE:case INT:
-    case RETURN:case WHILE:
-    case VOID:    case ASSIGN: 
-    case LT:     case LE: 
-    case GT:     case GE: 
-    case EQ:     case NOTEQ: 
-    case LPAREN:    case RPAREN: 
-    case LBRACKET:    case RBRACKET: 
-    case LBRACE:    case RBRACE: 
-    case SEMI: ;    case COMMA: 
-    case PLUS:     case MINUS: 
-    case TIMES:    case OVER: 
-    case ENDFILE:    case NUM:
-    case ID:
+  { 
+    case IF:      case ELSE:
+    case INT:     case RETURN:
+    case WHILE:   case VOID:    
+    case ASSIGN:  case LT:     
+    case LE:      case GT:     
+    case GE:      case EQ:     
+    case NOTEQ: 
+    case LPAREN:  case RPAREN: 
+    case LBRACKET:case RBRACKET: 
+    case LBRACE:  case RBRACE: 
+    case SEMI: ;  case COMMA: 
+    case PLUS:    case MINUS: 
+    case TIMES:   case OVER: 
+    case NUM:     case ID:
       fprintf(listing, "\t\t\t%s\t\t\t%s\n", token_name[token], tokenString);
       break;
-    case COMMENT : break;
-    case COMMENTERR :
+    case ENDFILE: 
+      fprintf(listing, "EOF\n"); 
+      break;
+    case COMMENT: 
+      break;
+    case COMMENTERR:
      fprintf(listing,
           "\t\t\tERROR\t\t\t%s\n","Comment Error");
           break;
