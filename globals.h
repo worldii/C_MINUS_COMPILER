@@ -1,6 +1,5 @@
 /****************************************************/
 /* File: globals.h                                  */
-/* Yacc/Bison Version                               */
 /* Global types and vars for TINY compiler          */
 /* must come before other include files             */
 /* Compiler Construction: Principles and Practice   */
@@ -15,27 +14,6 @@
 #include <ctype.h>
 #include <string.h>
 
-/* Yacc/Bison generates internally its own values
- * for the tokens. Other files can access these values
- * by including the tab.h file generated using the
- * Yacc/Bison option -d ("generate header")
- *
- * The YYPARSER flag prevents inclusion of the tab.h
- * into the Yacc/Bison output itself
- */
-
-#ifndef YYPARSER
-
-/* the name of the following file may change */
-#include "cminus.tab.h"
-
-/* ENDFILE is implicitly defined by Yacc/Bison,
- * and not included in the tab.h file
- */
-#define ENDFILE 0
-
-#endif
-
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -44,13 +22,35 @@
 #define TRUE 1
 #endif
 
+/* set NO_PARSE to TRUE to get a scanner-only compiler */
+#define NO_PARSE FALSE
+/* set NO_ANALYZE to TRUE to get a parser-only compiler */
+#define NO_ANALYZE TRUE
+
+/* set NO_CODE to TRUE to get a compiler that does not
+ * generate code
+ */
+#define NO_CODE FALSE
+
+
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
-
-/* Yacc/Bison generates its own integer values
- * for tokens
- */
-typedef int TokenType; 
+typedef enum 
+    /* book-keeping tokens */
+   {ENDFILE,ERROR,
+    /* reserved words */
+    IF,ELSE,INT, VOID, RETURN, WHILE,
+    /* multicharacter tokens */
+    ID,NUM,
+    /* special symbols */
+    PLUS,MINUS,TIMES,OVER,
+    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
+    SEMI,COMMA, 
+    LPAREN,RPAREN, // ()
+    LBRACKET, RBRACKET, // []
+    LBRACE,RBRACE, // {}, 
+    COMMENT, COMMENTERR
+   } TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -61,39 +61,126 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/
+// selectK : if else 합쳐져 있음
+// Iter : while 문임 
 
-typedef enum {StmtK,ExpK,DecK,TypeK,ParamK,OptK} NodeKind;
-typedef enum {CompoundK,IfK,IfelseK,WhileK,ReturnK} StmtKind;
-typedef enum {AssignK,VariableK,OpK,ConstK,CallK,IdK} ExpKind;
-typedef enum {VarK,FunK} DecKind;
-typedef enum {IntK,VoidK} TypeKind;
-typedef enum {SingleK,ArrayK} ParamKind;
-typedef enum {RelopK,AddopK,MulopK} OptKind;
-
+typedef enum {StmtK,ExpK, DecK, ParamK, TypeK} NodeKind;
+typedef enum {ExpK, CompoundK, IfK, IfelseK, IterK, RetK} StmtKind;
+typedef enum {AssignK, CompareK, OpK} ExpKind;
+typedef enum {VarK, ArrayK, FunK}DecKind;
+typedef enum {VarK, ArrayK} Paramkind;
+typedef enum {IntK ,VoidK}TypeKind;
 /* ExpType is used for type checking */
 typedef enum {Void,Integer} ExpType;
 
 #define MAXCHILDREN 3
 
-typedef struct treeNode
-   { struct treeNode * child[MAXCHILDREN];
-     struct treeNode * sibling;
-     int lineno;
-     NodeKind nodekind;
-     union {
-       StmtKind stmt; 
-	     ExpKind exp; 
-	     DecKind dec; 
-	     TypeKind type; 
-	     ParamKind prm;
-     	 OptKind op;  } 
-       kind;
-     union { TokenType op;
-             int val;
-             char * name; } attr;
-     ExpType type; /* for type checking of exps */
-   } TreeNode;
+// typedef struct treeNode
+//    { struct treeNode * child[MAXCHILDREN];
+//      struct treeNode * sibling;
+//      int lineno;
+//      NodeKind nodekind;
+//      union { StmtKind stmt; ExpKind exp;} kind;
+//      union { TokenType op;
+//              int val;
+//              char * name; } attr;
+//      ExpType type; /* for type checking of exps */
+//    } TreeNode;
 
+typedef struct treeNode
+{
+   struct treeNode * sibling;
+   int lineno;
+   NodeKind nodekind;
+   
+   union {
+      // DecK 
+      // DECLARE -> function, array ,var 
+      struct {
+         // var 
+         struct treeNode * type_specifier;
+         struct treeNode * id;
+         DecKind deckind;
+         union {
+            struct treeNode * num; // ARRAY ; 
+            struct { // FUNCTIon 
+               struct treeNode * params;
+               struct treeNode *compound_stmt;
+            }            
+         }
+      };
+
+      // ParamK 
+      // {VarK, ArrayK} Paramkind;
+      struct {
+         // var 
+         struct treeNode * type_specifier;
+         struct treeNode * id;
+         Paramkind paramkind;
+         union {
+            struct treeNode * num; // ARRAY ; 
+            struct { // FUNCTIon 
+               struct treeNode * params;
+               struct treeNode *compound_stmt;
+            }            
+         }
+      };
+
+      // 
+
+
+      //StmtK,ExpK, DecK, ParamK, TypeK
+
+      // STMTK
+      struct {
+         union {
+            // exp
+            struct treeNode * exp;
+            // Compound
+            struct {
+               struct treeNode * local_declarations;
+               struct treeNode * stmt_list;
+            };
+            // if_else stmt 
+            struct {
+               struct treeNode * if_stmt;
+               struct treeNode * else_stmt;
+            };
+            struct treeNode * if_stmt; // if_stmt 
+            struct treeNode * loop_stmt; // loop;
+            struct treeNode * ret_stmt ;// ret 
+         } 
+      };
+      struct {
+         struct treeNode * left_exp;
+         struct treeNode * right_exp;
+         union {
+            // OpK
+            struct treeNode * op;
+            // AssignK
+            struct treeNode * assign;
+            // CompareK;
+            struct treeNode * compare;
+         }
+      };
+      struct {
+         // var 
+         struct treeNode * type_specifier;
+         struct treeNode * id;
+         union {
+            struct treeNode * NUM; // ARRAY ; 
+         }
+      };
+      struct 
+      {
+         TokenType type;
+      } 
+      struct {
+         char * id;
+      }
+   }specific_kind;
+
+}TreeNode;
 /**************************************************/
 /***********   Flags for tracing       ************/
 /**************************************************/

@@ -30,7 +30,7 @@ cminus.tab.o : cminus.tab.c cminus.tab.h
 
 ## 명세서에 보면 -d 인자로 header file 생성할 수 있다고 나와 있음.
 clean:
-	rm -rf *.o  lex.yy.c *.gch *.exe *.txt cminus_tab.c cminus_tab.h 
+	rm -rf *.o  lex.yy.c *.gch *.exe  cminus_tab.c cminus_tab.h 
 fclean : clean 
 	rm -rf hw2_binary 
 
