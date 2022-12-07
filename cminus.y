@@ -50,11 +50,11 @@ var_declaration : type_specifier ID SEMI
                     declare_var($$, $1, $2);
                   }
                  | type_specifier ID LBRACKET NUM RBRACKET SEMI 
-                 {
-                    $$ = node_initialize();
-                    declare_array($$, $1, $2, $4);
-                 }
-                 ;
+                  {
+                      $$ = node_initialize();
+                      declare_array($$, $1, $2, $4);
+                  }
+                   ;
 type_specifier :  INT 
                   { 
                     $$ = node_initialize();
@@ -74,22 +74,22 @@ fun_declaration :  type_specifier ID LPAREN params RPAREN compound_stmt
                   ;
 params : param_list 
         { $$ = $1; }
-       | VOID 
-       { $$ = NULL;}
-       ;
+        | VOID 
+        { $$ = NULL;}
+        ;
 param_list : param_list COMMA param 
              {
               add_sibling($1, $3);
              }
-            | param 
-              { $$ = $1; }
-            ;
+              | param 
+                { $$ = $1; }
+              ;
 param : type_specifier ID
         {
           $$ = node_initialize();
           set_node_var_param($$, $1, $2);
         }
-       | type_specifier ID LBRACKET RBRACKET
+        | type_specifier ID LBRACKET RBRACKET
         {
           $$ = node_initialize();
           set_node_array_param($$, $1, $2);
@@ -106,30 +106,81 @@ local_declarations : local_declarations var_declaration
                     {
                       $$ = add_sibling($1, $2);
                     }
-                    | empty;
+                    | empty { $$ = NULL;}
+                    ;
 stmt_list : stmt_list stmt 
-          | empty
-          ;
-stmt : expressions_stmt { $$ = $1; } 
-     | compound_stmt { $$ = $1; } 
-     | selection_stmt { $$ = $1; }
-     | iteration_stmt { $$ = $1; } 
-     | return_stmt { $$ = $1; }
+            { $$ = add_sibling($1, $2);}
+            | empty 
+            { $$ = NULL;}
+            ;
+stmt : expressions_stmt 
+      { $$ = $1; } 
+     | compound_stmt 
+      { $$ = $1; } 
+     | selection_stmt 
+     { $$ = $1; }
+     | iteration_stmt 
+     { $$ = $1; } 
+     | return_stmt 
+     { $$ = $1; }
      ;
-expressions_stmt : expression SEMI
-                 | SEMI ; 
+expressions_stmt : expression SEMI 
+                  { $$ = $1;}
+                 | SEMI 
+                  { $$ = NULL;}
+                  ; 
 selection_stmt : IF LPAREN expression RPAREN stmt 
-              |  IF LPAREN expression RPAREN stmt else stmt;
-iteration_stmt : WHILE LPAREN expression RPAREN stmt ;
+                {
+                  $$ = node_initialize();
+                  set_node_selection($$, $3, $5, NULL);
+                }
+                | IF LPAREN expression RPAREN stmt else stmt
+                {
+                  $$ = node_initialize();
+                  set_node_selection($$, $3, $5, $7);
+                }
+                ;
+iteration_stmt : WHILE LPAREN expression RPAREN stmt 
+                {
+                  $$ = node_initialize();
+                  set_node_iteration($$, $3, $5);
+                }
+                ;
 return_stmt : return SEMI 
-            | return expression ;
+              {
+                $$ = node_initialize();
+                set_node_return($$, NULL);
+              }
+              | return expression
+              {
+                $$ = node_initialize();
+                set_node_return($$,$2);
+              } 
+              ;
 expression : var ASSIGN expression 
-          | simple_expression ;
+            {
+              $$ = node_initialize();
+              set_node_exp();
+            }
+            | simple_expression
+            {
+              $$ = $1;
+            }
+            ;
 var : ID 
-    | ID LPAREN expression RPAREN;
+      {
+        $$ = node_initialize();
+        set_node_var($$, $1);
+
+      }
+    | ID LPAREN expression RPAREN
+      {
+        $$ = node_initialize();
+        set_node_array($$, $1);
+      };
 simple_expression : additive_expression relop additive_expression 
                   | additive_expression;
-relop :  EQ 
+relop : EQ 
       | LT 
       | LE 
       | GT 

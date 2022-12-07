@@ -8,6 +8,7 @@
 
 #include "globals.h"
 #include "util.h"
+#include "string.h"
 
 /* Procedure printToken prints a token 
  * and its lexeme to the listing file
@@ -90,6 +91,12 @@ TreeNode* add_sibling(TreeNode *node, TreeNode* new_node){
   return node;
 }
 
+void set_node_id(TreeNode *node,  char * id){
+  node->nodekind = IdK;
+  int len = strlen(id);
+  node->specific_kind.ID.id = malloc(sizeof(char)*(len+1));
+  strcpy(node->specific_kind.ID.id , id);
+}
 
 void set_node_type(TreeNode *node, TypeKind type){
   node->nodekind = TypeK;
@@ -130,6 +137,30 @@ void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
   node->specific_kind.Param.id = id;
   node->specific_kind.Param.type_specifier = type;
 }
+void set_node_var(TreeNode * node,  TreeNode * id)
+{
+  node->nodekind = VariK;
+  node->specific_kind.Vari.kind = VVarK;
+  node->specific_kind.Vari.id = id;
+  node->specific_kind.Vari.exp= NULL;
+}
+
+void set_node_array(TreeNode * node,  TreeNode * id, TreeNode * exp)
+{
+  node->nodekind = VariK;
+  node->specific_kind.Vari.kind = VArrayK;
+  node->specific_kind.Vari.id = id;
+  node->specific_kind.Vari.exp= NULL;
+}
+
+
+void set_node_exp(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp){
+  node->nodekind = ExpK;
+  node->specific_kind.Exp.kind = AssignK;
+  node->specific_kind.Exp.left_exp =  var;
+  node->specific_kind.Exp.right_exp = exp;
+  node->specific_kind.Exp.op = op;
+}
 
 void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
 {
@@ -148,9 +179,27 @@ void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  Tre
   node->specific_kind.Stmt.exp =NULL;
 }
 
+void set_node_selection(TreeNode* node, TreeNode* exp,  TreeNode* if_stmt , TreeNode* else_stmt)
+{
+  node->nodekind = StmtK;
+  node->specific_kind.Stmt.kind = SelectK;
+  node->specific_kind.Stmt.exp = exp;
+  node->specific_kind.Stmt.if_stmt= if_stmt;
+  node->specific_kind.Stmt.else_stmt = else_stmt;
+}
+void set_node_iteration(TreeNode *node, TreeNode * exp , TreeNode *loop_stmt ){
+  node->nodekind = StmtK;
+  node->specific_kind.Stmt.kind = IterK;
+  node->specific_kind.Stmt.exp = exp;
+  node->specific_kind.Stmt.loop_stmt= loop_stmt;
+}
 
 
-
+void set_node_return(TreeNode *node, TreeNode * exp){
+  node->nodekind = StmtK;
+  node->specific_kind.Stmt.kind = RetK;
+  node->specific_kind.Stmt.exp = exp;
+}
 
 
 // /* Function newStmtNode creates a new statement

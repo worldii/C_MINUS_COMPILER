@@ -64,11 +64,13 @@ extern int lineno; /* source line number for listing */
 // selectK : if else 합쳐져 있음
 // Iter : while 문임 
 
-typedef enum {StmtK,ExpK, DecK, ParamK, TypeK} NodeKind;
+typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK} NodeKind;
 typedef enum {SimpleK, CompoundK, SelectK, IterK, RetK} StmtKind;
 typedef enum {AssignK, CompareK, OpK} ExpKind;
 typedef enum {VarK, ArrayK, FunK}DecKind;
 typedef enum {VarParamK, ArrayParamK} Paramkind;
+typedef enum {VVarK, VArrayK} VariKind;
+
 typedef enum {IntK ,VoidK} TypeKind;
 /* ExpType is used for type checking */
 typedef enum {Void,Integer} ExpType;
@@ -126,18 +128,12 @@ typedef struct treeNode
          };
       }Param;
 
-      // TypeK
-        struct 
-      { 
-         TypeKind kind;
-      }Type;
-
       // STMTK
       struct {
          StmtKind kind;
+         struct treeNode * exp;
          union {
             // exp
-            struct treeNode * exp;
             // Compound
             struct {
                struct treeNode * local_declarations;
@@ -149,7 +145,6 @@ typedef struct treeNode
                struct treeNode * else_stmt;
             };
             struct treeNode * loop_stmt; // loop;
-            struct treeNode * ret_stmt ;// ret 
          } ;
       }Stmt;
 
@@ -166,11 +161,27 @@ typedef struct treeNode
             // CompareK;
             struct treeNode * compare;
          };
-      }EXP;
+      }Exp;
+
+      struct {
+         VariKind kind;
+         struct TreeNode * id;
+         struct TreeNode * exp;
+      }Vari;
+
 
       struct {
          char * id;
       }ID;
+
+      
+      // TypeK
+        struct 
+      { 
+         TypeKind kind;
+      }Type;
+
+
    }specific_kind;
 
 }TreeNode;
