@@ -14,22 +14,29 @@
 
 
 #define YYSTYPE TreeNode *
-static char * savedName; /* for use in assignments */
-static int savedLineNo;  /* ditto */
+
+//static char * savedName; /* for use in assignments */
+//static int savedLineNo;  /* ditto */
 static TreeNode * savedTree; /* stores syntax tree for later return */
+
 static int yylex(void);
 static int yyerror(char * message);
 %}
 
 %token IF ELSE INT VOID RETURN WHILE  
 %token ID NUM 
-%token  EQ LT LE GT GE NOTEQ ASSIGN
+%token EQ LT LE GT GE NOTEQ ASSIGN
 %token PLUS MINUS TIMES OVER
-%token  SEMI COMMA
+%token SEMI COMMA
 %token LPAREN RPAREN 
 %token LBRACKET RBRACKET LBRACE RBRACE
-%token  COMMENT COMMENTERR ERROR
 %token ENDFILE
+%token COMMENT COMMENTERR ERROR
+
+
+%nonassoc RPAREN 
+%nonassoc ELSE
+
 
 %% /* Grammar for TINY */
 
@@ -46,12 +53,12 @@ declaration : var_declaration
               | fun_declaration 
               { $$ = $1; }
               ;
-var_declaration : type_specifier ID SEMI
+var_declaration : type_specifier id SEMI
                   {
                     $$ = node_initialize();
                     declare_var($$, $1, $2);
                   }
-                 | type_specifier ID LBRACKET NUM RBRACKET SEMI 
+                 | type_specifier id LBRACKET NUM RBRACKET SEMI 
                   {
                       $$ = node_initialize();
                       declare_array($$, $1, $2, $4);
@@ -60,15 +67,15 @@ var_declaration : type_specifier ID SEMI
 type_specifier :  INT 
                   { 
                     $$ = node_initialize();
-                    set_node_type($$, $1);
+                    set_node_type($$, IntK);
                   } 
                   | VOID 
                   {
                     $$ = node_initialize();
-                    set_node_type($$, $1);
+                    set_node_type($$, VoidK);
                   }
                   ;
-fun_declaration :  type_specifier ID LPAREN params RPAREN compound_stmt
+fun_declaration :  type_specifier id LPAREN params RPAREN compound_stmt
                   {
                     $$ = node_initialize();
                     declare_func($$,$1,$2,$4,$6);
@@ -81,17 +88,17 @@ params : param_list
         ;
 param_list : param_list COMMA param 
              {
-              add_sibling($1, $3);
+               $$ = add_sibling($1, $3);
              }
               | param 
                 { $$ = $1; }
               ;
-param : type_specifier ID
+param : type_specifier id
         {
           $$ = node_initialize();
           set_node_var_param($$, $1, $2);
         }
-        | type_specifier ID LBRACKET RBRACKET
+        | type_specifier id LBRACKET RBRACKET
         {
           $$ = node_initialize();
           set_node_array_param($$, $1, $2);
@@ -128,7 +135,10 @@ stmt : expressions_stmt
      { $$ = $1; }
      ;
 expressions_stmt : expression SEMI 
-                  { $$ = $1;}
+                  {
+                    $$ = node_initialize();
+                    set_node_exp($$, $1);
+                  }
                  | SEMI 
                   { $$ = NULL;}
                   ; 
@@ -170,16 +180,15 @@ expression : var ASSIGN expression
               $$ = $1;
             }
             ;
-var : ID 
+var : id 
       {
-        $$ = node_initialize();
-        set_node_var($$, $1);
+        $$ = $1;
 
       }
-    | ID LPAREN expression RPAREN
+    | id LPAREN expression RPAREN
       {
         $$ = node_initialize();
-        set_node_array($$, $1);
+        set_node_array($$, $1, $3);
       };
 simple_expression : additive_expression relop additive_expression 
                   {
@@ -256,7 +265,8 @@ mulop : TIMES
         set_node_op($$, $1);
       }
      ; 
-factor : LPAREN expression RPAREN
+factor : LPAREN expression RPAREN 
+        { $$ = $2;}
        | var { $$ = $1; } 
        | call { $$ = $1; }
        | num { $$ = $1;}
@@ -265,11 +275,18 @@ num   :  NUM
       {
         $$ = node_initialize();
         set_node_num($$,tokenString);
-      };
-call : ID LPAREN args RPAREN 
+      }
+      ;
+id   : ID 
+      {
+        $$ = node_initialize();
+        set_node_id($$, tokenString);
+      } 
+      ;
+call : id LPAREN args RPAREN 
      {
        $$ = node_initialize();
-       set_node_call_func($$,$1,$2);
+       set_node_call_func($$,$1,$3);
      };
 args : arg_list 
       { $$ = $1; }
@@ -298,7 +315,13 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
-  printf("%d %s\n", token, tokenString);
+  fprintf(listing,"hello ~%d %s\n", token, tokenString);
+  while (token == COMMENT)
+  {
+    token = getToken();
+    fprintf(listing,"comment %d %s\n", token, tokenString);
+
+  }
   fprintf(listing,"Debug: %d\n", token);
 
   return token; }

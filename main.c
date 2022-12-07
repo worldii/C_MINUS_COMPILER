@@ -7,17 +7,17 @@
 
 #include "globals.h"
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
-#define NO_PARSE TRUE
+#define NO_PARSE FALSE
 /* set NO_ANALYZE to TRUE to get a parser-only compiler */
-#define NO_ANALYZE FALSE
+#define NO_ANALYZE TRUE
 
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
 #define NO_CODE FALSE
 
-
 #include "util.h"
+
 #if NO_PARSE
 // Flex 이용할 것이므로 scan 은 필요가 없음.
 //#include "scan.h"
@@ -30,15 +30,6 @@
 #endif
 #endif
 #endif
-
-
-
-// #ifndef YYPARSER
-// #include "cminus.tab.h"
-// #define ENDFILE 0
-// typedef int TokenType;
-// #endif
-
 
 /* allocate global variables */
 int lineno = 0;
@@ -53,6 +44,7 @@ int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 int Error = FALSE;
+#define NO_CODE FALSE
 
 main( int argc, char * argv[] )
 { TreeNode * syntaxTree;

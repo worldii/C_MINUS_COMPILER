@@ -5,6 +5,9 @@
 /* Kenneth C. Louden                                */
 /****************************************************/
 
+%option noyywrap
+
+
 %{
 #include "globals.h"
 #include "util.h"
@@ -91,8 +94,7 @@ TokenType getToken(void)
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
-
-    //if (currentToken != COMMENT) fprintf(listing,"\t\t%d",lineno);
+    if (currentToken != COMMENT) fprintf(listing,"\t\t%d",lineno);
     printToken(currentToken,tokenString);
   }
   return currentToken;
