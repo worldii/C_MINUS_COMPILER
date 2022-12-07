@@ -70,7 +70,6 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
-#define ENDFILE 44
 
 
 #define YYSTYPE TreeNode *
@@ -80,7 +79,7 @@ static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
 static int yyerror(char * message);
 
-#line 84 "cminus.tab.c" /* yacc.c:339  */
+#line 83 "cminus.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -144,7 +143,8 @@ extern int yydebug;
     RBRACE = 284,
     ERROR = 285,
     COMMENT = 286,
-    COMMENTERR = 287
+    COMMENTERR = 287,
+    ENDFILE = 288
   };
 #endif
 
@@ -409,7 +409,7 @@ union yyalloc
 #define YYLAST   92
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  33
+#define YYNTOKENS  34
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  31
 /* YYNRULES -- Number of rules.  */
@@ -420,7 +420,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   287
+#define YYMAXUTOK   288
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -457,7 +457,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32
+      25,    26,    27,    28,    29,    30,    31,    32,    33
 };
 
 #if YYDEBUG
@@ -483,9 +483,9 @@ static const char *const yytname[] =
   "WHILE", "ID", "NUM", "EQ", "LT", "LE", "GT", "GE", "NOTEQ", "ASSIGN",
   "PLUS", "MINUS", "TIMES", "OVER", "SEMI", "COMMA", "LPAREN", "RPAREN",
   "LBRACKET", "RBRACKET", "LBRACE", "RBRACE", "ERROR", "COMMENT",
-  "COMMENTERR", "$accept", "program", "declaration_list", "declaration",
-  "var_declaration", "type_specifier", "fun_declaration", "params",
-  "param_list", "param", "compound_stmt", "local_declarations",
+  "COMMENTERR", "ENDFILE", "$accept", "program", "declaration_list",
+  "declaration", "var_declaration", "type_specifier", "fun_declaration",
+  "params", "param_list", "param", "compound_stmt", "local_declarations",
   "stmt_list", "stmt", "expressions_stmt", "selection_stmt",
   "iteration_stmt", "return_stmt", "expression", "var",
   "simple_expression", "relop", "additive_expression", "addop", "term",
@@ -501,7 +501,7 @@ static const yytype_uint16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287
+     285,   286,   287,   288
 };
 # endif
 
@@ -601,28 +601,28 @@ static const yytype_uint8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     5,     6,    34,    35,    36,    37,    38,    39,     0,
-      36,     9,    22,    24,    26,     6,    38,    40,    41,    42,
-      10,     9,    25,    23,    27,    26,    28,    43,    42,    22,
-      27,    44,    37,    38,    45,     9,     3,     7,     8,     9,
-      10,    22,    24,    29,    43,    46,    47,    48,    49,    50,
-      51,    52,    53,    55,    57,    59,    60,    61,    24,    22,
-      51,    24,    24,    51,    22,    17,    11,    12,    13,    14,
-      15,    16,    18,    19,    54,    56,    20,    21,    58,    51,
-      51,    51,    62,    63,    25,    51,    52,    55,    57,    59,
-      25,    25,    25,    25,    23,    46,    46,    51,     4,    46
+       0,     5,     6,    35,    36,    37,    38,    39,    40,     0,
+      37,     9,    22,    24,    26,     6,    39,    41,    42,    43,
+      10,     9,    25,    23,    27,    26,    28,    44,    43,    22,
+      27,    45,    38,    39,    46,     9,     3,     7,     8,     9,
+      10,    22,    24,    29,    44,    47,    48,    49,    50,    51,
+      52,    53,    54,    56,    58,    60,    61,    62,    24,    22,
+      52,    24,    24,    52,    22,    17,    11,    12,    13,    14,
+      15,    16,    18,    19,    55,    57,    20,    21,    59,    52,
+      52,    52,    63,    64,    25,    52,    53,    56,    58,    60,
+      25,    25,    25,    25,    23,    47,    47,    52,     4,    47
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    33,    34,    35,    35,    36,    36,    37,    37,    38,
-      38,    39,    40,    40,    41,    41,    42,    42,    43,    44,
-      44,    45,    45,    46,    46,    46,    46,    46,    47,    47,
-      48,    48,    49,    50,    50,    51,    51,    52,    52,    53,
-      53,    54,    54,    54,    54,    54,    54,    55,    55,    56,
-      56,    57,    57,    58,    58,    59,    59,    59,    59,    60,
-      61,    62,    62,    63,    63
+       0,    34,    35,    36,    36,    37,    37,    38,    38,    39,
+      39,    40,    41,    41,    42,    42,    43,    43,    44,    45,
+      45,    46,    46,    47,    47,    47,    47,    47,    48,    48,
+      49,    49,    50,    51,    51,    52,    52,    53,    53,    54,
+      54,    55,    55,    55,    55,    55,    55,    56,    56,    57,
+      57,    58,    58,    59,    59,    60,    60,    60,    60,    61,
+      62,    63,    63,    64,    64
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -2028,10 +2028,16 @@ int yyerror(char * message)
  */
 static int yylex(void)
 { 
-  int token = getToken();
+  int token ;
+  token = getToken();
+  while (token == COMMENT)
+  {
+    token = getToken();
+  }
   printf("%d %s\n", token, tokenString);
-  //fprintf(listing,"Debug: %d\n", token);
 
+  fprintf(listing,"Debug: %d\n", token);
+  
   return token; }
 
 TreeNode * parse(void)

@@ -14,10 +14,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#ifndef YYPARSER
-#include "cminus.tab.h"
-#endif
-
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -25,36 +21,25 @@
 #ifndef TRUE
 #define TRUE 1
 #endif
-typedef int TokenType;
-/* set NO_PARSE to TRUE to get a scanner-only compiler */
-#define NO_PARSE FALSE
-/* set NO_ANALYZE to TRUE to get a parser-only compiler */
-#define NO_ANALYZE TRUE
-
-/* set NO_CODE to TRUE to get a compiler that does not
- * generate code
- */
-#define NO_CODE FALSE
-
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
-// typedef enum 
-//     /* book-keeping tokens */
-//    {ENDFILE,ERROR,
-//     /* reserved words */
-//     IF,ELSE,INT, VOID, RETURN, WHILE,
-//     /* multicharacter tokens */
-//     ID,NUM,
-//     /* special symbols */
-//     PLUS,MINUS,TIMES,OVER,
-//     LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
-//     SEMI,COMMA, 
-//     LPAREN,RPAREN, // ()
-//     LBRACKET, RBRACKET, // []
-//     LBRACE,RBRACE, // {}, 
-//     COMMENT, COMMENTERR
-//    } TokenType;
+typedef enum 
+    /* book-keeping tokens */
+   {ENDFILE,ERROR,
+    /* reserved words */
+    IF,ELSE,INT, VOID, RETURN, WHILE,
+    /* multicharacter tokens */
+    ID,NUM,
+    /* special symbols */
+    PLUS,MINUS,TIMES,OVER,
+    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
+    SEMI,COMMA, 
+    LPAREN,RPAREN, // ()
+    LBRACKET, RBRACKET, // []
+    LBRACE,RBRACE, // {}, 
+    COMMENT, COMMENTERR
+   } TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */

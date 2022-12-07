@@ -57,13 +57,13 @@ whitespace  [ \t]+
                     ch = input();
                     if (ch == '*')  flag = 1;
                     else if (ch == '/') {
+                      
                       if (flag == 1) return COMMENT;
                     }
                     else if (ch == EOF ) break;
                     else if (ch == '\n') {
                         lineno++;         
                         flag = 0;
-
                     }
                     else 
                     {
@@ -77,19 +77,22 @@ whitespace  [ \t]+
 %%
 
 TokenType getToken(void)
-{ static int firstTime = TRUE;
+{ 
+  static int firstTime = TRUE;
   TokenType currentToken;
+
   if (firstTime)
   { firstTime = FALSE;
     lineno++;
     yyin = source;
     yyout = listing;
   }
+
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
 
-    if (currentToken != COMMENT) fprintf(listing,"\t\t%d ",lineno);
+    //if (currentToken != COMMENT) fprintf(listing,"\t\t%d",lineno);
     printToken(currentToken,tokenString);
   }
   return currentToken;

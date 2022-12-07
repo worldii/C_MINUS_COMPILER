@@ -6,7 +6,15 @@
 /****************************************************/
 
 #include "globals.h"
+/* set NO_PARSE to TRUE to get a scanner-only compiler */
+#define NO_PARSE TRUE
+/* set NO_ANALYZE to TRUE to get a parser-only compiler */
+#define NO_ANALYZE FALSE
 
+/* set NO_CODE to TRUE to get a compiler that does not
+ * generate code
+ */
+#define NO_CODE FALSE
 
 
 #include "util.h"
@@ -23,6 +31,15 @@
 #endif
 #endif
 
+
+
+// #ifndef YYPARSER
+// #include "cminus.tab.h"
+// #define ENDFILE 0
+// typedef int TokenType;
+// #endif
+
+
 /* allocate global variables */
 int lineno = 0;
 FILE * source;
@@ -31,11 +48,10 @@ FILE * code;
 
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
-int TraceScan = FALSE;
+int TraceScan = TRUE;
 int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
-
 int Error = FALSE;
 
 main( int argc, char * argv[] )
@@ -51,9 +67,9 @@ main( int argc, char * argv[] )
   if (strchr (pgm, '.') == NULL)
      strcat(pgm,".tny");
    
-  source = fopen("test1.c","r");
+  source = fopen(argv[1],"r");
   if (source == NULL)
-  { fprintf(stderr,"File %s not found\n",pgm);
+  { fprintf(stderr,"File %s not found\n",argv[1]);
     exit(1);
   }
 

@@ -9,21 +9,23 @@
 #include "globals.h"
 #include "util.h"
 #include "string.h"
-#define ENDFILE 44
 /* Procedure printToken prints a token 
  * and its lexeme to the listing file
  */
+
  static char* token_name[] = {
    [IF] = "IF", [ELSE] = "ELSE",  [INT] = "INT", [VOID] = "VOID", [RETURN] = "RETURN", [WHILE] = "WHILE",
    [ID] ="ID",  [NUM] = "NUM",  [PLUS] = "+", [MINUS] = "-", [TIMES] = "*", [OVER] = "/", 
    [LT] = "<", [LE] = "<=",  [GT] = ">",  [GE]= ">=", [EQ] ="==" , [NOTEQ] = "!=", [ASSIGN] = "=", 
    [SEMI] = ";", [COMMA] = ",", [LPAREN] = "(", [RPAREN] = ")", [LBRACKET] = "[", [RBRACKET] = "]", 
-  [LBRACE]= "{", [RBRACE]= "}" , [ENDFILE] = "ENDFILE"
+  [LBRACE]= "{", [RBRACE]= "}" , [ENDFILE] = "ENDFILE", [ERROR] = "ERROR"
 };
 
 void printToken( TokenType token, const char* tokenString )
 { 
-printf("%d", token);
+   if (token == COMMENT)
+    return;
+ // fprintf(listing,"hehe %d %s", token, tokenString);
   switch (token)
   { 
     case IF:      case ELSE:
@@ -49,11 +51,11 @@ printf("%d", token);
       break;
     case COMMENTERR:
      fprintf(listing,
-          "\t\t\tERROR\t\t\t%s\n","Comment Error");
-          break;
+          "\t\t\tERRORsss\t\t\t%s\n","Comment Error");
+      break;
     case ERROR:
       fprintf(listing,
-          "\t\t\tERROR\t\t\t%s\n",tokenString);
+          "\t\t\tERRORccc\t\t\t%s\n",tokenString);
       break;
     default: /* should never happen */
       fprintf(listing,"Unknown token: %d\n",token);
@@ -368,8 +370,8 @@ static void printSpaces(void)
 }
 */
 
-void printTree( TreeNode * tree )
-{ int i;
+void printTree( struct treeNode * tree )
+{ 
   INDENT;
   while (tree != NULL) {
     printSpaces();

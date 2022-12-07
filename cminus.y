@@ -11,7 +11,6 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
-#define ENDFILE 44
 
 
 #define YYSTYPE TreeNode *
@@ -29,7 +28,8 @@ static int yyerror(char * message);
 %token  SEMI COMMA
 %token LPAREN RPAREN 
 %token LBRACKET RBRACKET LBRACE RBRACE
-%token ERROR COMMENT COMMENTERR
+%token  COMMENT COMMENTERR ERROR
+%token ENDFILE
 
 %% /* Grammar for TINY */
 
@@ -299,7 +299,7 @@ static int yylex(void)
 { 
   int token = getToken();
   printf("%d %s\n", token, tokenString);
-  //fprintf(listing,"Debug: %d\n", token);
+  fprintf(listing,"Debug: %d\n", token);
 
   return token; }
 
