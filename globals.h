@@ -97,7 +97,7 @@ typedef struct treeNode
       // DecK 
       // DECLARE -> function, array ,var 
       struct {
-         DecKind deckind;
+         DecKind kind;
          // var 
          struct treeNode * type_specifier;
          struct treeNode * id;
@@ -134,7 +134,7 @@ typedef struct treeNode
 
       // STMTK
       struct {
-         StmtKind stmtkind;
+         StmtKind kind;
          union {
             // exp
             struct treeNode * exp;
@@ -155,6 +155,7 @@ typedef struct treeNode
 
       //StmtK,ExpK, DecK, ParamK, TypeK
       struct {
+         ExpKind kind;
          struct treeNode * left_exp;
          struct treeNode * right_exp;
          union {

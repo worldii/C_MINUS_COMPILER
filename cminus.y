@@ -34,7 +34,7 @@ static int yyerror(char * message);
 program               : declaration_list
                         { savedTree = $1;} 
                       ;
-declaration_list :    declaration-list declaration 
+declaration_list :    declaration_list declaration 
                       { $$ = add_sibling($1, $2);}
                       | declaration 
                       { $$ = $1; }
@@ -103,6 +103,9 @@ compound_stmt : LBRACE local_declarations stmt_list RBRACE
                 ;
     
 local_declarations : local_declarations var_declaration 
+                    {
+                      $$ = add_sibling($1, $2);
+                    }
                     | empty;
 stmt_list : stmt_list stmt 
           | empty

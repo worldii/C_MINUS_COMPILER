@@ -76,7 +76,7 @@ TreeNode * node_initialize(){
   return temp_node;
 }
 
-void add_sibling(TreeNode *node, TreeNode* new_node){
+TreeNode* add_sibling(TreeNode *node, TreeNode* new_node){
   TreeNode * temp_node = node;
   if (!temp_node) 
     temp_node = new_node;
@@ -87,6 +87,7 @@ void add_sibling(TreeNode *node, TreeNode* new_node){
     }
       temp_node = new_node;
   }
+  return node;
 }
 
 
@@ -98,7 +99,7 @@ void set_node_type(TreeNode *node, TypeKind type){
 void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 {
   node->nodekind = DecK;
-  node->specific_kind.Dec.deckind = VarK;
+  node->specific_kind.Dec.kind = VarK;
   node->specific_kind.Dec.type_specifier = type;
   node->specific_kind.Dec.id = id;
 }
@@ -106,7 +107,7 @@ void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num )
 {
   node->nodekind = DecK;
-  node->specific_kind.Dec.deckind = ArrayK;
+  node->specific_kind.Dec.kind = ArrayK;
   node->specific_kind.Dec.id = id;
   node->specific_kind.Dec.type_specifier = type;
   node->specific_kind.Dec.num = num;
@@ -115,7 +116,7 @@ void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num
 void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt)
 {
   node->nodekind = DecK;
-  node->specific_kind.Dec.deckind = FunK;
+  node->specific_kind.Dec.kind = FunK;
   node->specific_kind.Dec.id = id;
   node->specific_kind.Dec.type_specifier = type;
   node->specific_kind.Dec.params = params;
@@ -127,63 +128,67 @@ void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
   node->nodekind = ParamK;
   node->specific_kind.Param.kind = VarK;
   node->specific_kind.Param.id = id;
-  node->specific_kind.Param.type = type;
+  node->specific_kind.Param.type_specifier = type;
 }
 
 void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
 {
   node->nodekind = ParamK;
-  node->specific_kind.Param.paramkind = ArrayK;
+  node->specific_kind.Param.kind = ArrayK;
   node->specific_kind.Param.id = id;
-  node->specific_kind.Param.type = type;
+  node->specific_kind.Param.type_specifier = type;
 }
 
 void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  TreeNode * stmt_list)
 {
   node->nodekind = StmtK;
-  node->specific_kind.Stmt.StmtKind = CompoundK;
+  node->specific_kind.Stmt.kind = CompoundK;
   node->specific_kind.Stmt.local_declarations = local_declarations;
   node->specific_kind.Stmt.stmt_list = stmt_list;
+  node->specific_kind.Stmt.exp =NULL;
 }
 
 
 
-/* Function newStmtNode creates a new statement
- * node for syntax tree construction
- */
-TreeNode * newStmtNode(StmtKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-  int i;
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else {
-    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-    t->sibling = NULL;
-    t->nodekind = StmtK;
-    t->kind.stmt = kind;
-    t->lineno = lineno;
-  }
-  return t;
-}
 
-/* Function newExpNode creates a new expression 
- * node for syntax tree construction
- */
-TreeNode * newExpNode(ExpKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-  int i;
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else {
-    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-    t->sibling = NULL;
-    t->nodekind = ExpK;
-    t->kind.exp = kind;
-    t->lineno = lineno;
-    t->type = Void;
-  }
-  return t;
-}
+
+
+// /* Function newStmtNode creates a new statement
+//  * node for syntax tree construction
+//  */
+// TreeNode * newStmtNode(StmtKind kind)
+// { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+//   int i;
+//   if (t==NULL)
+//     fprintf(listing,"Out of memory error at line %d\n",lineno);
+//   else {
+//     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+//     t->sibling = NULL;
+//     t->nodekind = StmtK;
+//     t->kind.stmt = kind;
+//     t->lineno = lineno;
+//   }
+//   return t;
+// }
+
+// /* Function newExpNode creates a new expression 
+//  * node for syntax tree construction
+//  */
+// TreeNode * newExpNode(ExpKind kind)
+// { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+//   int i;
+//   if (t==NULL)
+//     fprintf(listing,"Out of memory error at line %d\n",lineno);
+//   else {
+//     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+//     t->sibling = NULL;
+//     t->nodekind = ExpK;
+//     t->kind.exp = kind;
+//     t->lineno = lineno;
+//     t->type = Void;
+//   }
+//   return t;
+// }
 
 /* Function copyString allocates and makes a new
  * copy of an existing string
