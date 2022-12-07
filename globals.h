@@ -14,6 +14,10 @@
 #include <ctype.h>
 #include <string.h>
 
+#ifndef YYPARSER
+#include "cminus.tab.h"
+#endif
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -21,7 +25,7 @@
 #ifndef TRUE
 #define TRUE 1
 #endif
-
+typedef int TokenType;
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
 #define NO_PARSE FALSE
 /* set NO_ANALYZE to TRUE to get a parser-only compiler */
@@ -35,22 +39,22 @@
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE,ERROR,
-    /* reserved words */
-    IF,ELSE,INT, VOID, RETURN, WHILE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    PLUS,MINUS,TIMES,OVER,
-    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
-    SEMI,COMMA, 
-    LPAREN,RPAREN, // ()
-    LBRACKET, RBRACKET, // []
-    LBRACE,RBRACE, // {}, 
-    COMMENT, COMMENTERR
-   } TokenType;
+// typedef enum 
+//     /* book-keeping tokens */
+//    {ENDFILE,ERROR,
+//     /* reserved words */
+//     IF,ELSE,INT, VOID, RETURN, WHILE,
+//     /* multicharacter tokens */
+//     ID,NUM,
+//     /* special symbols */
+//     PLUS,MINUS,TIMES,OVER,
+//     LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
+//     SEMI,COMMA, 
+//     LPAREN,RPAREN, // ()
+//     LBRACKET, RBRACKET, // []
+//     LBRACE,RBRACE, // {}, 
+//     COMMENT, COMMENTERR
+//    } TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -64,10 +68,10 @@ extern int lineno; /* source line number for listing */
 // selectK : if else 합쳐져 있음
 // Iter : while 문임 
 
-typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK} NodeKind;
-typedef enum {SimpleK, CompoundK, SelectK, IterK, RetK} StmtKind;
-typedef enum {AssignK, CompareK, OpK} ExpKind;
-typedef enum {VarK, ArrayK, FunK}DecKind;
+typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
+typedef enum {CompoundK, SelectK, IterK, RetK} StmtKind;
+typedef enum {AssignK, SimpleK} ExpKind;
+typedef enum {VarK, ArrayK, FunK, CallK}DecKind;
 typedef enum {VarParamK, ArrayParamK} Paramkind;
 typedef enum {VVarK, VArrayK} VariKind;
 
@@ -108,7 +112,8 @@ typedef struct treeNode
             struct { // FUNCTIon 
                struct treeNode * params;
                struct treeNode *compound_stmt;
-            };            
+            }; 
+            struct treeNode * args_list;   // CallK      
          };
       }Dec;
 
@@ -157,9 +162,9 @@ typedef struct treeNode
             // OpK
             struct treeNode * op;
             // AssignK
-            struct treeNode * assign;
+            //struct treeNode * assign;
             // CompareK;
-            struct treeNode * compare;
+            //struct treeNode * compare;
          };
       }Exp;
 
@@ -169,11 +174,9 @@ typedef struct treeNode
          struct TreeNode * exp;
       }Vari;
 
-
       struct {
          char * id;
       }ID;
-
       
       // TypeK
         struct 
@@ -181,6 +184,13 @@ typedef struct treeNode
          TypeKind kind;
       }Type;
 
+      struct {
+         char op[3];
+      } Op;
+
+      struct {
+         int num;
+      } Num;
 
    }specific_kind;
 

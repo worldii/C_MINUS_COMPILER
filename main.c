@@ -57,7 +57,7 @@ main( int argc, char * argv[] )
     exit(1);
   }
 
-  //listing = stdout; /* send listing to screen */
+  listing = stdout; /* send listing to screen */
   //  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
 
   /*for (int i = 0 ;i < strlen(pgm2) ; i++) 
@@ -70,7 +70,7 @@ main( int argc, char * argv[] )
     }
   }*/
 
-  listing = fopen("test1_20182202.txt", "wt");
+  //listing = fopen("test1_20182202.txt", "wt");
 
 #if NO_PARSE
   fprintf(listing,"TINY COMPILATION: hw1_20182202.txt\n");

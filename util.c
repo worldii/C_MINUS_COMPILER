@@ -9,21 +9,21 @@
 #include "globals.h"
 #include "util.h"
 #include "string.h"
-
+#define ENDFILE 44
 /* Procedure printToken prints a token 
  * and its lexeme to the listing file
  */
-static char* token_name[100] = {
-  [IF] = "IF", [ELSE] = "ELSE",  [INT] = "INT", [VOID] = "VOID", [RETURN] = "RETURN", [WHILE] = "WHILE",
-  [ID] ="ID",  [NUM] = "NUM",  [PLUS] = "+", [MINUS] = "-", [TIMES] = "*", [OVER] = "/", 
-  [LT] = "<", [LE] = "<=",  [GT] = ">",  [GE]= ">=", [EQ] ="==" , [NOTEQ] = "!=", [ASSIGN] = "=", 
-  [SEMI] = ";", [COMMA] = ",", [LPAREN] = "(", [RPAREN] = ")", [LBRACKET] = "[", [RBRACKET] = "]", 
+ static char* token_name[5000] = {
+   [IF] = "IF", [ELSE] = "ELSE",  [INT] = "INT", [VOID] = "VOID", [RETURN] = "RETURN", [WHILE] = "WHILE",
+   [ID] ="ID",  [NUM] = "NUM",  [PLUS] = "+", [MINUS] = "-", [TIMES] = "*", [OVER] = "/", 
+   [LT] = "<", [LE] = "<=",  [GT] = ">",  [GE]= ">=", [EQ] ="==" , [NOTEQ] = "!=", [ASSIGN] = "=", 
+   [SEMI] = ";", [COMMA] = ",", [LPAREN] = "(", [RPAREN] = ")", [LBRACKET] = "[", [RBRACKET] = "]", 
   [LBRACE]= "{", [RBRACE]= "}" , [ENDFILE] = "ENDFILE"
 };
 
 void printToken( TokenType token, const char* tokenString )
 { 
-
+printf("%d", token);
   switch (token)
   { 
     case IF:      case ELSE:
@@ -154,12 +154,19 @@ void set_node_array(TreeNode * node,  TreeNode * id, TreeNode * exp)
 }
 
 
-void set_node_exp(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp){
+void set_node_exp_assign(TreeNode* node, TreeNode *var, TreeNode * exp){
   node->nodekind = ExpK;
   node->specific_kind.Exp.kind = AssignK;
   node->specific_kind.Exp.left_exp =  var;
   node->specific_kind.Exp.right_exp = exp;
+}
+void set_node_exp_simple(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp)
+{
+  node->nodekind = ExpK;
+  node->specific_kind.Exp.kind = SimpleK;
+  node->specific_kind.Exp.left_exp =  var;
   node->specific_kind.Exp.op = op;
+  node->specific_kind.Exp.right_exp = exp;
 }
 
 void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
@@ -199,6 +206,38 @@ void set_node_return(TreeNode *node, TreeNode * exp){
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = RetK;
   node->specific_kind.Stmt.exp = exp;
+}
+static char * token_to_char( TokenType op) {
+  switch (op) {
+    case EQ : return "==";
+    case LT : return "<";
+    case LE : return "<=";
+    case GT : return ">";
+    case NOTEQ : return "!=";
+    case ASSIGN : return "=";
+    default : 
+      printf("ERROR \n");
+      exit(-1);
+  }
+}
+
+void set_node_op(TreeNode * node , TokenType op )
+{
+  node->nodekind = OpK;
+  strcpy(node->specific_kind.Op.op, token_to_char(op));
+}
+
+
+void set_node_num (TreeNode* node , char * string) {
+  node->nodekind = NumK;
+  node->specific_kind.Num.num = atoi (string);
+}
+void set_node_call_func(TreeNode *node , TreeNode *id , TreeNode * args)
+{
+  node->nodekind = DecK;
+  node->specific_kind.Dec.kind = CallK;
+  node->specific_kind.Dec.args_list = args;
+  node->specific_kind.Dec.id = id;
 }
 
 
@@ -242,6 +281,7 @@ void set_node_return(TreeNode *node, TreeNode * exp){
 /* Function copyString allocates and makes a new
  * copy of an existing string
  */
+
 char * copyString(char * s)
 { int n;
   char * t;
@@ -327,3 +367,133 @@ static void printSpaces(void)
   UNINDENT;
 }
 */
+
+void printTree( TreeNode * tree )
+{ int i;
+  INDENT;
+  while (tree != NULL) {
+    printSpaces();
+    if (tree->nodekind==DecK)
+    { switch (tree->specific_kind.Dec.kind) {
+        case VarK:
+          printf("Declare Variable\n")
+          printTree(tree->type_specifier);
+          printTree(tree->id);
+          break;
+        case ArrayK:
+          printf("Declare Array\n")
+          printTree(tree->type_specifier);
+          printTree(tree->id);
+          printTree(tree->num);
+          break;
+        case FunK:
+          printf("Declare Func\n")
+          printTree(tree->type_specifier);
+          printTree(tree->id);
+          printTree(tree->params); 
+          printTree(tree->compound_stmt);  
+          break;
+        case CallK:
+           printf("Call\n")
+          printTree(tree->id);
+          printTree(tree->args_list); 
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==ParamK)
+    { switch (tree->specific_kind.Param.kind) {
+        case VarParamK:
+          fprintf(listing,"If\n");
+          break;
+        case ArrayParamK:
+          fprintf(listing,"Repeat\n");
+          break;
+       
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==StmtK)
+    { switch (tree->specific_kind.Stmt.kind) {
+        case CompoundK:
+          fprintf(listing,"Op: ");
+          break;
+        case SelectK:
+          fprintf(listing,"If\n");
+          break;
+        case IterK:
+          fprintf(listing,"If\n");
+          break;
+        case RetK:
+          fprintf(listing,"If\n");
+          break;
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==ExpK)
+    { switch (tree->specific_kind.Exp.kind) {
+        case AssignK:
+          fprintf(listing,"Op: ");
+          break;
+        case SimpleK:
+          fprintf(listing,"If\n");
+          break;
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }else if (tree->nodekind==ExpK)
+    { switch (tree->specific_kind.Exp.kind) {
+        case AssignK:
+          fprintf(listing,"Op: ");
+          break;
+        case SimpleK:
+          fprintf(listing,"If\n");
+          break;
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==VariK)
+    { switch (tree->specific_kind.Vari.kind) {
+        case VVarK:
+          fprintf(listing,"Op: ");
+          break;
+        case VArrayK:
+          fprintf(listing,"If\n");
+
+          break;
+        default:
+          fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==TypeK)
+    { if (tree->specific_kind.Type.kind) {
+          fprintf(listing,"If\n");
+      }
+    }
+    else if (tree->nodekind==OpK)
+    { 
+          fprintf(listing,"If\n");
+      
+    }
+    else if (tree->nodekind==IdK)
+    { 
+          fprintf(listing,"If\n");
+    }
+    else if (tree->nodekind==NumK)
+    { 
+          fprintf(listing,"If\n");
+    }
+    else fprintf(listing,"Unknown node kind\n");
+    tree = tree->sibling;
+  }
+  UNINDENT;
+}

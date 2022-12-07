@@ -11,6 +11,8 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
+#define ENDFILE 44
+
 
 #define YYSTYPE TreeNode *
 static char * savedName; /* for use in assignments */
@@ -106,11 +108,12 @@ local_declarations : local_declarations var_declaration
                     {
                       $$ = add_sibling($1, $2);
                     }
-                    | empty { $$ = NULL;}
+                    | //empty 
+                    { $$ = NULL;}
                     ;
 stmt_list : stmt_list stmt 
             { $$ = add_sibling($1, $2);}
-            | empty 
+            | //empty 
             { $$ = NULL;}
             ;
 stmt : expressions_stmt 
@@ -134,7 +137,7 @@ selection_stmt : IF LPAREN expression RPAREN stmt
                   $$ = node_initialize();
                   set_node_selection($$, $3, $5, NULL);
                 }
-                | IF LPAREN expression RPAREN stmt else stmt
+                | IF LPAREN expression RPAREN stmt ELSE stmt
                 {
                   $$ = node_initialize();
                   set_node_selection($$, $3, $5, $7);
@@ -146,12 +149,12 @@ iteration_stmt : WHILE LPAREN expression RPAREN stmt
                   set_node_iteration($$, $3, $5);
                 }
                 ;
-return_stmt : return SEMI 
+return_stmt : RETURN SEMI 
               {
                 $$ = node_initialize();
                 set_node_return($$, NULL);
               }
-              | return expression
+              | RETURN expression
               {
                 $$ = node_initialize();
                 set_node_return($$,$2);
@@ -160,7 +163,7 @@ return_stmt : return SEMI
 expression : var ASSIGN expression 
             {
               $$ = node_initialize();
-              set_node_exp();
+              set_node_exp_assign($$, $1, $3);
             }
             | simple_expression
             {
@@ -179,34 +182,105 @@ var : ID
         set_node_array($$, $1);
       };
 simple_expression : additive_expression relop additive_expression 
-                  | additive_expression;
+                  {
+                    $$ = node_initialize();
+                    set_node_exp_simple($$, $1, $2, $3);
+                  }
+                  | additive_expression 
+                  { $$ = $1; }
+                  ;
 relop : EQ 
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
       | LT 
-      | LE 
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
+      | LE
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      } 
       | GT 
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
       | GE 
-      | NOTEQ;
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
+      | NOTEQ
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      };
+
 additive_expression : additive_expression addop term 
+                      {
+                        $$ = node_initialize();
+                        set_node_exp_simple($$, $1, $2, $3);
+                      }
                       | term { $$ = $1; }
-addop : PLUS 
-      | MINUS ;
+                      ;
+addop : PLUS  
+      {    
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
+      | MINUS
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      };
 term : term mulop factor 
+    { 
+      $$ = node_initialize();
+      set_node_exp_simple($$, $1, $2, $3);
+    }
     | factor 
+    { $$ = $1;}
     ; 
-mulop : TIMES
+mulop : TIMES 
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
      |  OVER 
+      {
+        $$ = node_initialize();
+        set_node_op($$, $1);
+      }
      ; 
 factor : LPAREN expression RPAREN
        | var { $$ = $1; } 
        | call { $$ = $1; }
-       | NUM 
+       | num { $$ = $1;}
        ; 
-call : ID LPAREN args RPAREN ; 
-args : arg_list { $$ = $1; }
-      | empty 
+num   :  NUM 
+      {
+        $$ = node_initialize();
+        set_node_num($$,tokenString);
+      };
+call : ID LPAREN args RPAREN 
+     {
+       $$ = node_initialize();
+       set_node_call_func($$,$1,$2);
+     };
+args : arg_list 
+      { $$ = $1; }
+      | //empty 
+      { $$ = NULL; }
       ; 
 arg_list : arg_list COMMA expression 
-        | expression ;
+        { $$ = add_sibling($1, $3); }
+        | expression 
+        { $$ = $1;}
+        ;
 %%
 
 int yyerror(char * message)
@@ -224,7 +298,7 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
-  printf("%d\n", token);
+  printf("%d %s\n", token, tokenString);
   //fprintf(listing,"Debug: %d\n", token);
 
   return token; }
