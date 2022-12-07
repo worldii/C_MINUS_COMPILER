@@ -60,13 +60,14 @@ void printToken( TokenType token, const char* tokenString )
 }
 
 
-// My Implementation
+// My Implementation Start
+
 TreeNode * node_initialize(){
   TreeNode * temp_node = malloc(sizeof(TreeNode));
   if (temp_node == NULL) {
      // ERROR 
      printf("Allocation Error\n");
-     return ;
+     return NULL;
   }
 
   temp_node->sibling = NULL;
@@ -88,62 +89,61 @@ void add_sibling(TreeNode *node, TreeNode* new_node){
   }
 }
 
-void set_node_type(TreeNode *node, Typekind type){
-  node->nodeKind = TypeK;
-  node->specific_kind.typekind = type;
+
+void set_node_type(TreeNode *node, TypeKind type){
+  node->nodekind = TypeK;
+  node->specific_kind.Type.kind = type;
 }
 
 void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 {
   node->nodekind = DecK;
-  node->specific_kind.deckind = VarK;
-  node->specific_kind.type_specifier = type;
-  node->specific_kind.id = id;
+  node->specific_kind.Dec.deckind = VarK;
+  node->specific_kind.Dec.type_specifier = type;
+  node->specific_kind.Dec.id = id;
 }
 
 void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num )
 {
   node->nodekind = DecK;
-  node->specific_kind.deckind = ArrayK;
-  node->specific_kind.id = id;
-  node->specific_kind.type_specifier = type;
-  node->specific_kind.num = num;
+  node->specific_kind.Dec.deckind = ArrayK;
+  node->specific_kind.Dec.id = id;
+  node->specific_kind.Dec.type_specifier = type;
+  node->specific_kind.Dec.num = num;
 }
 
 void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt)
 {
   node->nodekind = DecK;
-  node->specific_kind.deckind = FunK;
-  node->specific_kind.id = id;
-  node->specific_kind.type_specifier = type;
-  node->specific_kind.params = params;
-  node->specific_kind.compound_stmt = compound_stmt;
+  node->specific_kind.Dec.deckind = FunK;
+  node->specific_kind.Dec.id = id;
+  node->specific_kind.Dec.type_specifier = type;
+  node->specific_kind.Dec.params = params;
+  node->specific_kind.Dec.compound_stmt = compound_stmt;
 }
 
 void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
 {
   node->nodekind = ParamK;
-  node-> paramkind = VarK;
-  node->specific_kind.paramkind = VarK;
-  node->specific_kind.id = id;
-  node->specific_kind.type = type;
+  node->specific_kind.Param.kind = VarK;
+  node->specific_kind.Param.id = id;
+  node->specific_kind.Param.type = type;
 }
 
 void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
 {
   node->nodekind = ParamK;
-  node->paramkind = ArrayK;
-  node->specific_kind.paramkind = ArrayK;
-  node->specific_kind.id = id;
-  node->specific_kind.type = type;
+  node->specific_kind.Param.paramkind = ArrayK;
+  node->specific_kind.Param.id = id;
+  node->specific_kind.Param.type = type;
 }
 
 void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  TreeNode * stmt_list)
 {
   node->nodekind = StmtK;
-  node->StmtKind = CompoundK;
-  node->local_declarations = local_declarations;
-  node->stmt_list = stmt_list;
+  node->specific_kind.Stmt.StmtKind = CompoundK;
+  node->specific_kind.Stmt.local_declarations = local_declarations;
+  node->specific_kind.Stmt.stmt_list = stmt_list;
 }
 
 
@@ -219,7 +219,7 @@ static void printSpaces(void)
 /* procedure printTree prints a syntax tree to the 
  * listing file using indentation to indicate subtrees
  */
-void printTree( TreeNode * tree )
+/*void printTree( TreeNode * tree )
 { int i;
   INDENT;
   while (tree != NULL) {
@@ -272,3 +272,4 @@ void printTree( TreeNode * tree )
   }
   UNINDENT;
 }
+*/

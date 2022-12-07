@@ -65,10 +65,10 @@ extern int lineno; /* source line number for listing */
 // Iter : while 문임 
 
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK} NodeKind;
-typedef enum {ExpK, CompoundK, SelectK, IterK, RetK} StmtKind;
+typedef enum {SimpleK, CompoundK, SelectK, IterK, RetK} StmtKind;
 typedef enum {AssignK, CompareK, OpK} ExpKind;
 typedef enum {VarK, ArrayK, FunK}DecKind;
-typedef enum {VarK, ArrayK} Paramkind;
+typedef enum {VarParamK, ArrayParamK} Paramkind;
 typedef enum {IntK ,VoidK} TypeKind;
 /* ExpType is used for type checking */
 typedef enum {Void,Integer} ExpType;
@@ -106,31 +106,31 @@ typedef struct treeNode
             struct { // FUNCTIon 
                struct treeNode * params;
                struct treeNode *compound_stmt;
-            }            
-         }
-      };
+            };            
+         };
+      }Dec;
 
       // ParamK 
       // {VarK, ArrayK} Paramkind;
       struct {
          // var 
+         Paramkind kind;
          struct treeNode * type_specifier;
          struct treeNode * id;
-         Paramkind paramkind;
          union {
             struct treeNode * num; // ARRAY ; 
             struct { // FUNCTIon 
                struct treeNode * params;
                struct treeNode *compound_stmt;
-            }            
-         }
-      };
+            };   
+         };
+      }Param;
 
       // TypeK
         struct 
       { 
-         TypeKind typekind;
-      } 
+         TypeKind kind;
+      }Type;
 
       // STMTK
       struct {
@@ -150,8 +150,8 @@ typedef struct treeNode
             };
             struct treeNode * loop_stmt; // loop;
             struct treeNode * ret_stmt ;// ret 
-         } 
-      };
+         } ;
+      }Stmt;
 
       //StmtK,ExpK, DecK, ParamK, TypeK
       struct {
@@ -164,20 +164,12 @@ typedef struct treeNode
             struct treeNode * assign;
             // CompareK;
             struct treeNode * compare;
-         }
-      };
-      struct {
-         // var 
-         struct treeNode * type_specifier;
-         struct treeNode * id;
-         union {
-            struct treeNode * NUM; // ARRAY ; 
-         }
-      };
-    
+         };
+      }EXP;
+
       struct {
          char * id;
-      }
+      }ID;
    }specific_kind;
 
 }TreeNode;
