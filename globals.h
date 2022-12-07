@@ -65,11 +65,11 @@ extern int lineno; /* source line number for listing */
 // Iter : while 문임 
 
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK} NodeKind;
-typedef enum {ExpK, CompoundK, IfK, IfelseK, IterK, RetK} StmtKind;
+typedef enum {ExpK, CompoundK, SelectK, IterK, RetK} StmtKind;
 typedef enum {AssignK, CompareK, OpK} ExpKind;
 typedef enum {VarK, ArrayK, FunK}DecKind;
 typedef enum {VarK, ArrayK} Paramkind;
-typedef enum {IntK ,VoidK}TypeKind;
+typedef enum {IntK ,VoidK} TypeKind;
 /* ExpType is used for type checking */
 typedef enum {Void,Integer} ExpType;
 
@@ -97,10 +97,10 @@ typedef struct treeNode
       // DecK 
       // DECLARE -> function, array ,var 
       struct {
+         DecKind deckind;
          // var 
          struct treeNode * type_specifier;
          struct treeNode * id;
-         DecKind deckind;
          union {
             struct treeNode * num; // ARRAY ; 
             struct { // FUNCTIon 
@@ -126,13 +126,15 @@ typedef struct treeNode
          }
       };
 
-      // 
-
-
-      //StmtK,ExpK, DecK, ParamK, TypeK
+      // TypeK
+        struct 
+      { 
+         TypeKind typekind;
+      } 
 
       // STMTK
       struct {
+         StmtKind stmtkind;
          union {
             // exp
             struct treeNode * exp;
@@ -141,16 +143,17 @@ typedef struct treeNode
                struct treeNode * local_declarations;
                struct treeNode * stmt_list;
             };
-            // if_else stmt 
+            // if_else stmt , if
             struct {
                struct treeNode * if_stmt;
                struct treeNode * else_stmt;
             };
-            struct treeNode * if_stmt; // if_stmt 
             struct treeNode * loop_stmt; // loop;
             struct treeNode * ret_stmt ;// ret 
          } 
       };
+
+      //StmtK,ExpK, DecK, ParamK, TypeK
       struct {
          struct treeNode * left_exp;
          struct treeNode * right_exp;
@@ -171,10 +174,7 @@ typedef struct treeNode
             struct treeNode * NUM; // ARRAY ; 
          }
       };
-      struct 
-      {
-         TokenType type;
-      } 
+    
       struct {
          char * id;
       }

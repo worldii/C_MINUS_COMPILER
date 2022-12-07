@@ -85,10 +85,23 @@ param_list : param_list COMMA param
               { $$ = $1; }
             ;
 param : type_specifier ID
-        {}
+        {
+          $$ = node_initialize();
+          set_node_var_param($$, $1, $2);
+        }
        | type_specifier ID LBRACKET RBRACKET
-        {}
-compound_stmt : LBRACE local_declarations stmt_list RBRACE;
+        {
+          $$ = node_initialize();
+          set_node_array_param($$, $1, $2);
+        }
+        ;
+compound_stmt : LBRACE local_declarations stmt_list RBRACE
+                {
+                  $$ = node_initialize();
+                  set_node_compound_stmt($$, $2, $3);
+                }
+                ;
+    
 local_declarations : local_declarations var_declaration 
                     | empty;
 stmt_list : stmt_list stmt 

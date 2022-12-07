@@ -59,6 +59,8 @@ void printToken( TokenType token, const char* tokenString )
   }
 }
 
+
+// My Implementation
 TreeNode * node_initialize(){
   TreeNode * temp_node = malloc(sizeof(TreeNode));
   if (temp_node == NULL) {
@@ -86,14 +88,15 @@ void add_sibling(TreeNode *node, TreeNode* new_node){
   }
 }
 
-void set_node_type(TreeNode *node, TokenType type){
+void set_node_type(TreeNode *node, Typekind type){
   node->nodeKind = TypeK;
-  node->specific_kind.type = type;
+  node->specific_kind.typekind = type;
 }
 
 void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 {
   node->nodekind = DecK;
+  node->specific_kind.deckind = VarK;
   node->specific_kind.type_specifier = type;
   node->specific_kind.id = id;
 }
@@ -101,6 +104,7 @@ void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num )
 {
   node->nodekind = DecK;
+  node->specific_kind.deckind = ArrayK;
   node->specific_kind.id = id;
   node->specific_kind.type_specifier = type;
   node->specific_kind.num = num;
@@ -109,6 +113,7 @@ void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num
 void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt)
 {
   node->nodekind = DecK;
+  node->specific_kind.deckind = FunK;
   node->specific_kind.id = id;
   node->specific_kind.type_specifier = type;
   node->specific_kind.params = params;
@@ -117,12 +122,31 @@ void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * para
 
 void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
 {
-  node->nodekin = ParamK;
+  node->nodekind = ParamK;
+  node-> paramkind = VarK;
+  node->specific_kind.paramkind = VarK;
   node->specific_kind.id = id;
   node->specific_kind.type = type;
 }
 
-void set_node_array_param(TreeNode * node TreeNode * type,  TreeNode * id)
+void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
+{
+  node->nodekind = ParamK;
+  node->paramkind = ArrayK;
+  node->specific_kind.paramkind = ArrayK;
+  node->specific_kind.id = id;
+  node->specific_kind.type = type;
+}
+
+void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  TreeNode * stmt_list)
+{
+  node->nodekind = StmtK;
+  node->StmtKind = CompoundK;
+  node->local_declarations = local_declarations;
+  node->stmt_list = stmt_list;
+}
+
+
 
 /* Function newStmtNode creates a new statement
  * node for syntax tree construction
