@@ -23,4 +23,4 @@ cminus.lex.c: cminus.l
 clean:
 	rm -f $(OBJS) cminus.lex.c cminus.tab.c cminus.tab.h cminus.output
 fclean : clean 
-	rm -rf hw2_binary 
+	rm -rf hw2_binary test1_20182202.txt

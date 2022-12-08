@@ -312,7 +312,6 @@ id   : ID
 int yyerror(char * message)
 {
   if (yychar == ENDFILE) return 0;
-
   fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
   fprintf(listing,"Current token: ");
   printToken(yychar,tokenString);

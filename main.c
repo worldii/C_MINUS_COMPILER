@@ -57,15 +57,18 @@ main( int argc, char * argv[] )
 
   if (strchr (pgm, '.') == NULL)
      strcat(pgm,".tny");
-   
-  source = fopen(argv[1],"r");
+  if (strcmp (argv[1], "test1.c")) {
+    fprintf(stderr,"Input file name is different.\n");
+    exit(1);
+  }
+
+  source = fopen("test1.c","r");
   if (source == NULL)
   { fprintf(stderr,"File %s not found\n",argv[1]);
     exit(1);
   }
 
-  listing = stdout; /* send listing to screen */
-  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
+  //listing = stdout; /* send listing to screen */
 
   /*for (int i = 0 ;i < strlen(pgm2) ; i++) 
   {
@@ -77,7 +80,10 @@ main( int argc, char * argv[] )
     }
   }*/
 
-  //listing = fopen("test1_20182202.txt", "wt");
+//listing = fopen("test1_20182202.txt", "wt");
+listing = stdout;
+fprintf(listing,"TINY COMPILATION: test2.c\n");
+
 
 #if NO_PARSE
   fprintf(listing,"TINY COMPILATION: hw1_20182202.txt\n");
@@ -87,7 +93,7 @@ main( int argc, char * argv[] )
 #else
   syntaxTree = parse();
   if (TraceParse) {
-    fprintf(listing,"\nSyntax tree:\n");
+    fprintf(listing,"Syntax tree:\n");
     printTree(syntaxTree);
   }
 #if !NO_ANALYZE
@@ -116,6 +122,7 @@ main( int argc, char * argv[] )
 #endif
 #endif
 #endif
+  fclose(listing);
   fclose(source);
   return 0;
 }

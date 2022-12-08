@@ -1,8 +1,6 @@
-void main(void)
-{
-	int a;
-	for(;){
-		break;
-	}
+int a;
+
+void main(int arg){
+	a = a + 1;
 }
 

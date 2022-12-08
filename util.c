@@ -52,7 +52,7 @@ void printToken( TokenType token, const char* tokenString )
       break;
     case COMMENTERR:
      fprintf(listing,
-          "\t\t\tERROR\t\t\t%s\n","Comment Error");
+          "\t\t\tCOMMENTERROR\t\t\t%s\n","Comment Error");
       break;
     case ERROR:
       fprintf(listing,
@@ -69,7 +69,7 @@ TreeNode * node_initialize(){
   TreeNode * temp_node = (TreeNode *) malloc(sizeof(TreeNode));
   if (temp_node == NULL) {
      // ERROR 
-     printf("Allocation Error\n");
+     fprintf(listing, "Allocation Error\n");
      return NULL;
   }
 
@@ -259,8 +259,8 @@ void set_node_return(TreeNode *node, TreeNode * exp){
     case OVER : return "/";
 
     default : 
-      printf("TOKEN ERROR \n");
-      exit(-1);
+      fprintf(listing, "TOKEN ERROR \n");
+      return "";
   }
 }
 
@@ -466,7 +466,7 @@ void printTree( TreeNode * tree )
     }
     else if (tree->nodekind == TypeK)
     {  
-      printf("Type : ");
+      fprintf(listing, "Type : ");
       switch (tree->specific_kind.Type.kind) {
         case IntK:
           fprintf(listing,"int\n");         

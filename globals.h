@@ -51,13 +51,14 @@ typedef int TokenType;
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */
-
 extern int lineno; /* source line number for listing */
 
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/
 
+
+// MY IMPLEMENTATION
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
 typedef enum {expK,CompoundK, SelectK, IterK, RetK,AssignK} StmtKind;
 typedef enum {SimpleK, AddictiveK, MulopK} ExpKind;
@@ -73,39 +74,10 @@ typedef struct treeNode
    struct treeNode * sibling;
    int lineno;
    NodeKind nodekind;
-   
+   // typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
+
    union {
-      // DecK  (FunK ,CallK, Array ,ArrayK2, VarK)
-      struct {
-         DecKind kind;
-         struct treeNode * type_specifier;
-         struct treeNode * id;
-         union {
-            struct treeNode * num;  
-            struct { 
-               struct treeNode * params;
-               struct treeNode *compound_stmt;
-            }; 
-            struct treeNode * args_list;   // CallK      
-         };
-      }Dec;
-
-      // ParamK 
-      // {VarK, ArrayK} Paramkind;
-      struct {
-         // var 
-         Paramkind kind;
-         struct treeNode * type_specifier;
-         struct treeNode * id;
-         union {
-            struct { // FUNCTIon 
-               struct treeNode * params;
-               struct treeNode *compound_stmt;
-            };   
-         };
-      }Param;
-
-      // STMTK
+      // typedef enum {expK,CompoundK, SelectK, IterK, RetK,AssignK} StmtKind;
       struct {
          StmtKind kind;
          struct treeNode * exp;
@@ -126,8 +98,7 @@ typedef struct treeNode
          } ;
       }Stmt;
 
-      //StmtK,ExpK, DecK, ParamK, TypeK
-
+      // typedef enum {SimpleK, AddictiveK, MulopK} ExpKind;
       struct {
          ExpKind kind;
          struct treeNode * left_exp;
@@ -135,6 +106,35 @@ typedef struct treeNode
          struct treeNode * op;
       }Exp;
 
+      // typedef enum {VarK, ArrayK, ArrayK2, FunK, CallK}DecKind;
+      struct {
+         DecKind kind;
+         struct treeNode * type_specifier;
+         struct treeNode * id;
+         union {
+            struct treeNode * num;  
+            struct { 
+               struct treeNode * params;
+               struct treeNode *compound_stmt;
+            }; 
+            struct treeNode * args_list;   // CallK      
+         };
+      }Dec;
+
+      // typedef enum {VarParamK, ArrayParamK} Paramkind;
+      struct {
+         Paramkind kind;
+         struct treeNode * type_specifier;
+         struct treeNode * id;
+         union {
+            struct {  
+               struct treeNode * params;
+               struct treeNode *compound_stmt;
+            };   
+         };
+      } Param;
+
+      // typedef enum {IsNewline, NoNewline }Idkind;
       struct {
          Idkind kind;
          char * id;
@@ -145,16 +145,17 @@ typedef struct treeNode
       { 
          TypeKind kind;
       }Type;
+
+      // OpK 
       struct {
          char op[3];
       } Op;
 
+      // NumK
       struct {
          int num;
       } Num;
-
    }specific_kind;
-
 }TreeNode;
 
 /**************************************************/
