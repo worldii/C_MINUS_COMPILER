@@ -24,29 +24,29 @@
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
-// typedef enum 
-//     /* book-keeping tokens */
-//    {ENDFILE,ERROR,
-//     /* reserved words */
-//     IF,ELSE,INT, VOID, RETURN, WHILE,
-//     /* multicharacter tokens */
-//     ID,NUM,
-//     /* special symbols */
-//     PLUS,MINUS,TIMES,OVER,
-//     LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
-//     SEMI,COMMA, 
-//     LPAREN,RPAREN, // ()
-//     LBRACKET, RBRACKET, // []
-//     LBRACE,RBRACE, // {}, 
-//     COMMENT, COMMENTERR
-//    } TokenType;
+typedef enum 
+    /* book-keeping tokens */
+   {ENDFILE,ERROR,
+    /* reserved words */
+    IF,ELSE,INT, VOID, RETURN, WHILE,
+    /* multicharacter tokens */
+    ID,NUM,
+    /* special symbols */
+    PLUS,MINUS,TIMES,OVER,
+    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
+    SEMI,COMMA, 
+    LPAREN,RPAREN, // ()
+    LBRACKET, RBRACKET, // []
+    LBRACE,RBRACE, // {}, 
+    COMMENT, COMMENTERR
+   } TokenType;
 
 
-#ifndef YYPARSER
-#include "cminus.tab.h"
-#define ENDFILE 0
-#endif
-typedef int TokenType;
+// #ifndef YYPARSER
+// #include "cminus.tab.h"
+// #endif
+// typedef int TokenType;
+
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */
@@ -62,7 +62,7 @@ extern int lineno; /* source line number for listing */
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
 typedef enum {expK,CompoundK, SelectK, IterK, RetK} StmtKind;
 typedef enum {AssignK, SimpleK} ExpKind;
-typedef enum {VarK, ArrayK, FunK, CallK}DecKind;
+typedef enum {VarK, ArrayK, ArrayK2, FunK, CallK}DecKind;
 typedef enum {VarParamK, ArrayParamK} Paramkind;
 typedef enum {IntK ,VoidK} TypeKind;
 /* ExpType is used for type checking */

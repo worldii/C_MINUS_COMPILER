@@ -31,9 +31,8 @@ static int yyerror(char * message);
 %token LPAREN RPAREN 
 %token LBRACKET RBRACKET LBRACE RBRACE
 %token ENDFILE
-%token COMMENT COMMENTERR ERROR
-
-
+%token COMMENTERR COMMENT
+%token ERROR
 %nonassoc RPAREN 
 %nonassoc ELSE
 
@@ -316,12 +315,6 @@ static int yylex(void)
 { 
   int token = getToken();
   fprintf(listing,"hello ~%d %s\n", token, tokenString);
-  while (token == COMMENT)
-  {
-    token = getToken();
-    fprintf(listing,"comment %d %s\n", token, tokenString);
-
-  }
   fprintf(listing,"Debug: %d\n", token);
 
   return token; }

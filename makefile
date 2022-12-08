@@ -1,28 +1,51 @@
-CC=gcc
-CFLAGS=-c -Wall -O3
-EXEC=20182202
+CC = gcc 
 
-.SUFFIXES: .c .o
+CFLAGS = -Wall -Wextra 
 
-LEXCODE=cminus.l
-LEXSRC=cminus.lex.c
+OBJS = main.o util.o lex.yy.o 
 
-BISONCODE=cminus.y
-BISONSRC=cminus.tab.c
-BISONHDR=cminus.tab.h
-BISONVERBOSE=cminus.output
+#tiny.exe: $(OBJS)
+#	$(CC) $(CFLAGS) -etiny $(OBJS)
 
-SRCS=main.c util.c $(LEXSRC) $(BISONSRC)
-OBJS=$(SRCS:.c=.o)
+all: hw1_binary
 
-$(EXEC): $(LEXSRC) $(BISONSRC) $(OBJS)
-	$(CC) -o $@ $(OBJS)
+hw1_binary : $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) -lfl
 
-$(BISONSRC): $(LEXSRC) $(BISONCODE)
-	bison -o $(BISONSRC) -vd $(BISONCODE)
+main.o: main.c globals.h util.h 
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(LEXSRC): $(LEXCODE)
-	flex -o $(LEXSRC) $(LEXCODE)
+util.o: util.c util.h globals.h
+	$(CC) $(CFLAGS) -c util.c
+
+
+#parse.obj: parse.c parse.h scan.h globals.h util.h
+#	$(CC) $(CFLAGS) -c parse.c
+
+#symtab.obj: symtab.c symtab.h
+#	$(CC) $(CFLAGS) -c symtab.c
+
+#analyze.obj: analyze.c globals.h symtab.h analyze.h
+#	$(CC) $(CFLAGS) -c analyze.c
+
+#code.obj: code.c code.h globals.h
+#	$(CC) $(CFLAGS) -c code.c
+
+#cgen.obj: cgen.c globals.h symtab.h code.h cgen.h
+#	$(CC) $(CFLAGS) -c cgen.c
 
 clean:
-	rm -f $(OBJS) $(EXEC) $(LEXSRC) $(BISONSRC) $(BISONHDR) $(BISONVERBOSE)
+	rm -rf *.o  lex.yy.c *.gch *.exe *.txt
+fclean : clean 
+	rm -rf hw1_binary 
+#tm.exe: tm.c
+#	$(CC) $(CFLAGS) -etm tm.c
+
+#tiny: tiny.exe
+#tm: tm.exe
+
+lex.yy.o: lex.yy.c globals.h util.h 
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+lex.yy.c: cminus.l
+	flex -o $@ $<

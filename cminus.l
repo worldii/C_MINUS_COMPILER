@@ -1,12 +1,12 @@
 /****************************************************/
-/* File: tiny.l                                     */
-/* Lex specification for TINY                       */
+/* File: cminus.l                                   */
+/* Lex specification for C-                         */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
+/* Modified by Kwanghee Choi                        */
 /****************************************************/
 
 %option noyywrap
-
 
 %{
 #include "globals.h"
@@ -16,6 +16,8 @@
 char tokenString[MAXTOKENLEN+1];
 %}
 
+%x COMMENT
+
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
@@ -24,6 +26,16 @@ newline     \n
 whitespace  [ \t]+
 
 %%
+
+"/*"                { BEGIN(COMMENT); }
+<COMMENT>"*/"       { BEGIN(INITIAL); }
+<COMMENT>.          { /* skip comments */ }
+<COMMENT>{newline}  { lineno++; }
+<COMMENT><<EOF>>    { BEGIN(INITIAL); return ERROR; }
+"*/"                { return ERROR; }
+<<EOF>>             { return ENDFILE; }
+
+
 
 "if"            {return IF;}
 "else"          {return ELSE;}
@@ -50,53 +62,32 @@ whitespace  [ \t]+
 "]"             {return RBRACKET;}
 ";"             {return SEMI;}
 ","             {return COMMA;}
-{number}        {return NUM;}
-{identifier}    {return ID;}
-{newline}       {lineno++;}
-{whitespace}    {/* skip whitespace */}
-"/*"            { char ch;
-                  int flag = 0;
-                  while (1) {
-                    ch = input();
-                    if (ch == '*')  flag = 1;
-                    else if (ch == '/') {
-                      
-                      if (flag == 1) return COMMENT;
-                    }
-                    else if (ch == EOF ) break;
-                    else if (ch == '\n') {
-                        lineno++;         
-                        flag = 0;
-                    }
-                    else 
-                    {
-                    flag = 0;
-                    }
-                  }
-                  return COMMENTERR;
-}
-.               {return ERROR;}
+
+{number}            { return NUM; }
+{identifier}        { return ID; }
+{newline}           { lineno++; }
+{whitespace}        { /* skip whitespace */ }
 
 %%
 
-TokenType getToken(void)
-{ 
+TokenType
+getToken(void)
+{
   static int firstTime = TRUE;
   TokenType currentToken;
-
   if (firstTime)
-  { firstTime = FALSE;
-    lineno++;
-    yyin = source;
-    yyout = listing;
-  }
-
+    {
+      firstTime = FALSE;
+      lineno++;
+      yyin = source;
+      yyout = listing;
+    }
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
-  if (TraceScan) {
-    if (currentToken != COMMENT) fprintf(listing,"\t\t%d",lineno);
-    printToken(currentToken,tokenString);
-  }
+  if (TraceScan)
+    {
+      fprintf(listing,"\t%d\t\t\t",lineno);
+      printToken(currentToken,tokenString);
+    }
   return currentToken;
 }
-

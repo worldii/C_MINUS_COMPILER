@@ -122,6 +122,14 @@ void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num
   node->specific_kind.Dec.num = num;
 }
 
+void set_node_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num )
+{
+  node->nodekind = DecK;
+  node->specific_kind.Dec.kind = ArrayK2;
+  node->specific_kind.Dec.id = id;
+  node->specific_kind.Dec.type_specifier = type;
+}
+
 void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt)
 {
   node->nodekind = DecK;
@@ -142,7 +150,7 @@ void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
 
 void set_node_exp(TreeNode * node,  TreeNode * exp){
   node->nodekind = StmtK;
-  node->specific_kind.Vari.kind = expK;
+  node->specific_kind.Stmt.kind = expK;
   node->specific_kind.Stmt.exp = exp;
 }
 void set_node_exp_assign(TreeNode* node, TreeNode *var, TreeNode * exp){
@@ -455,23 +463,6 @@ void printTree( TreeNode * tree )
           printTree(tree->specific_kind.Exp.left_exp);
           printTree(tree->specific_kind.Exp.op);   
           printTree(tree->specific_kind.Exp.right_exp);         
-          break;
-        default:
-          fprintf(listing,"Unknown ExpNode kind\n");
-          break;
-      }
-    }
-    else if (tree->nodekind==VariK)
-    { switch (tree->specific_kind.Vari.kind) {
-        case VVarK:
-          printf("Variable \n");
-          printTree(tree->specific_kind.Vari.id);
-          //printTree(tree->specific_kind.Vari.exp);            
-          break;
-        case VArrayK:
-          printf("Variable Array\n");
-          printTree(tree->specific_kind.Vari.id);
-          printTree(tree->specific_kind.Vari.exp);   
           break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
