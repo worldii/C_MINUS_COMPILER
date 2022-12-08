@@ -80,7 +80,7 @@ TreeNode * node_initialize(){
 }
 
 TreeNode* add_sibling(TreeNode *node, TreeNode* new_node){
-  printf("add sibling\n");
+  //printf("add sibling\n");
   
   TreeNode * temp_node = node;
   if (temp_node  == NULL) 
@@ -97,7 +97,7 @@ TreeNode* add_sibling(TreeNode *node, TreeNode* new_node){
 }
 
 void set_node_id(TreeNode *node,  char * id){
-  printf("make node id\n");
+  //printf("make node id\n");
 
   node->nodekind = IdK;
   int len = strlen(id);
@@ -106,7 +106,7 @@ void set_node_id(TreeNode *node,  char * id){
 }
 
 void set_node_type(TreeNode *node, TypeKind type){
-  printf("make node type\n");
+ // printf("make node type\n");
 
   node->nodekind = TypeK;
   node->specific_kind.Type.kind = type;
@@ -114,7 +114,7 @@ void set_node_type(TreeNode *node, TypeKind type){
 
 void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 {
-  printf("make declare var\n");
+ // printf("make declare var\n");
   node->nodekind = DecK;
   node->specific_kind.Dec.kind = VarK;
   node->specific_kind.Dec.type_specifier = type;
@@ -123,7 +123,7 @@ void declare_var(TreeNode * node, TreeNode * type, TreeNode *id)
 
 void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num )
 {
-  printf("make declare array\n");
+ // printf("make declare array\n");
 
   node->nodekind = DecK;
   node->specific_kind.Dec.kind = ArrayK;
@@ -134,7 +134,7 @@ void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num
 
 void set_node_array(TreeNode * node,TreeNode * type, TreeNode *id )
 {
-    printf("make node array\n");
+  //printf("make node array\n");
 
   node->nodekind = DecK;
   node->specific_kind.Dec.kind = ArrayK2;
@@ -144,7 +144,7 @@ void set_node_array(TreeNode * node,TreeNode * type, TreeNode *id )
 
 void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt)
 {
-      printf("make node array\n");
+   //   printf("make node array\n");
 
   node->nodekind = DecK;
   node->specific_kind.Dec.kind = FunK;
@@ -156,8 +156,7 @@ void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * para
 
 void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
 {
-      printf("make var param\n");
-
+  // printf("make var param\n");
   node->nodekind = ParamK;
   node->specific_kind.Param.kind = VarK;
   node->specific_kind.Param.id = id;
@@ -165,26 +164,24 @@ void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id)
 }
 
 void set_node_exp(TreeNode * node,  TreeNode * exp){
-      printf("make node exp\n");
-
+      // printf("make node exp\n");
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = expK;
   node->specific_kind.Stmt.exp = exp;
 }
 void set_node_exp_assign(TreeNode* node, TreeNode *var, TreeNode * exp){
-      printf("make node assign\n");
- 
+  // printf("make node assign\n");
   node->nodekind = ExpK;
   node->specific_kind.Exp.kind = AssignK;
   node->specific_kind.Exp.left_exp = var;
   node->specific_kind.Exp.op = node_initialize();
   set_node_op(node->specific_kind.Exp.op, ASSIGN);
-
   node->specific_kind.Exp.right_exp = exp;
 }
+
 void set_node_exp_simple(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp)
 {
-      printf("make node simples\n");
+      // printf("make node simples\n");
 
   node->nodekind = ExpK;
   node->specific_kind.Exp.kind = SimpleK;
@@ -192,10 +189,17 @@ void set_node_exp_simple(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode *
   node->specific_kind.Exp.op = op;
   node->specific_kind.Exp.right_exp = exp;
 }
-
+void set_node_exp_addictive(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp)
+{
+  node->nodekind = ExpK;
+  node->specific_kind.Exp.kind = AddictiveK;
+  node->specific_kind.Exp.left_exp =  var;
+  node->specific_kind.Exp.op = op;
+  node->specific_kind.Exp.right_exp = exp;
+}
 void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
 {
-      printf("make node array param\n");
+      // printf("make node array param\n");
 
   node->nodekind = ParamK;
   node->specific_kind.Param.kind = ArrayK;
@@ -205,7 +209,7 @@ void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id)
 
 void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  TreeNode * stmt_list)
 {
-      printf("make node compound stmt\n");
+  printf("make node compound stmt\n");
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = CompoundK;
   node->specific_kind.Stmt.local_declarations = local_declarations;
@@ -215,7 +219,7 @@ void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  Tre
 
 void set_node_selection(TreeNode* node, TreeNode* exp,  TreeNode* if_stmt , TreeNode* else_stmt)
 {
-      printf("make node select stmt\n");
+  // printf("make node select stmt\n");
 
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = SelectK;
@@ -224,7 +228,7 @@ void set_node_selection(TreeNode* node, TreeNode* exp,  TreeNode* if_stmt , Tree
   node->specific_kind.Stmt.else_stmt = else_stmt;
 }
 void set_node_iteration(TreeNode *node, TreeNode * exp , TreeNode *loop_stmt ){
-      printf("make node iter stmt\n");
+      // printf("make node iter stmt\n");
  
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = IterK;
@@ -235,7 +239,7 @@ void set_node_iteration(TreeNode *node, TreeNode * exp , TreeNode *loop_stmt ){
 
 void set_node_return(TreeNode *node, TreeNode * exp){
   
-      printf("make node rets stmt\n");
+      // printf("make node rets stmt\n");
   node->nodekind = StmtK;
   node->specific_kind.Stmt.kind = RetK;
   node->specific_kind.Stmt.exp = exp;
@@ -260,66 +264,36 @@ void set_node_return(TreeNode *node, TreeNode * exp){
 
 void set_node_op(TreeNode * node , TokenType op )
 {
-      printf("make node op \n");
+      // printf("make node op \n");
 
   node->nodekind = OpK;
   strcpy(node->specific_kind.Op.op, token_to_char(op));
 }
 
 void set_node_num (TreeNode* node , char * string) {
-      printf("make node num \n");
+      // printf("make node num \n");
 
   node->nodekind = NumK;
 
   node->specific_kind.Num.num = atoi (string);
 }
+void set_id_type(TreeNode * node, Idkind isNewline) {
+  if (isNewline){
+    node->specific_kind.ID.kind = IsNewline;
+  }
+  else {
+    node->specific_kind.ID.kind = NoNewline;
+  }
+}
 void set_node_call_func(TreeNode *node , TreeNode *id , TreeNode * args)
 {
-      printf("make node call \n");
+      // printf("make node call \n");
 
   node->nodekind = DecK;
   node->specific_kind.Dec.kind = CallK;
   node->specific_kind.Dec.args_list = args;
   node->specific_kind.Dec.id = id;
 }
-
-
-// /* Function newStmtNode creates a new statement
-//  * node for syntax tree construction
-//  */
-// TreeNode * newStmtNode(StmtKind kind)
-// { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-//   int i;
-//   if (t==NULL)
-//     fprintf(listing,"Out of memory error at line %d\n",lineno);
-//   else {
-//     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-//     t->sibling = NULL;
-//     t->nodekind = StmtK;
-//     t->kind.stmt = kind;
-//     t->lineno = lineno;
-//   }
-//   return t;
-// }
-
-// /* Function newExpNode creates a new expression 
-//  * node for syntax tree construction
-//  */
-// TreeNode * newExpNode(ExpKind kind)
-// { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-//   int i;
-//   if (t==NULL)
-//     fprintf(listing,"Out of memory error at line %d\n",lineno);
-//   else {
-//     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-//     t->sibling = NULL;
-//     t->nodekind = ExpK;
-//     t->kind.exp = kind;
-//     t->lineno = lineno;
-//     t->type = Void;
-//   }
-//   return t;
-// }
 
 /* Function copyString allocates and makes a new
  * copy of an existing string
@@ -415,20 +389,19 @@ void printTree( TreeNode * tree )
 { 
 
   INDENT;
-  if (tree == NULL) {printf("NULL\n");return; }
+  if (tree == NULL) {return; }
   for (; tree != NULL; tree = tree->sibling){
     printSpaces();
     if (tree->nodekind == DecK)
-    { printf("DEC\n");
+    {
       switch (tree->specific_kind.Dec.kind) {
         case VarK:
-          printf("Declare Variable\n");
-      
+          printf("Variable Declare : ");
+          printTree(tree->specific_kind.Dec.id);  
           printTree(tree->specific_kind.Dec.type_specifier);
-          printTree(tree->specific_kind.Dec.id);
           break;
         case ArrayK:
-          printf("Declare Array\n");
+          printf("Variable Array Declare :");
           printTree(tree->specific_kind.Dec.type_specifier);
           printTree(tree->specific_kind.Dec.id);
           printTree(tree->specific_kind.Dec.num);
@@ -439,11 +412,10 @@ void printTree( TreeNode * tree )
           printTree(tree->specific_kind.Dec.id);
           break;
         case FunK:
-          printf("Declare Func\n");
-          printTree(tree->specific_kind.Dec.type_specifier);
+          printf("Function Declare : ");
           printTree(tree->specific_kind.Dec.id);
+          printTree(tree->specific_kind.Dec.type_specifier);
           if (tree->specific_kind.Dec.params) printTree(tree->specific_kind.Dec.params); 
-          else {printf(" PARAM VOID\n");}
           printTree(tree->specific_kind.Dec.compound_stmt);  
           break;
         case CallK:
@@ -456,17 +428,18 @@ void printTree( TreeNode * tree )
       }
     }
     else if (tree->nodekind == ParamK)
-    { switch (tree->specific_kind.Param.kind) {
-      printf("PARAM\n");
+    { 
+      switch (tree->specific_kind.Param.kind)
+      {
         case VarParamK:
-          printf("Parameter Variable\n");
-          printTree(tree->specific_kind.Param.type_specifier);
+          printf("Parameter Variable :");
           printTree(tree->specific_kind.Param.id);
+          printTree(tree->specific_kind.Param.type_specifier);
           break;
         case ArrayParamK:
-          printf("Parameter Array\n");
-          printTree(tree->specific_kind.Param.type_specifier);
+          printf("Parameter Array :");
           printTree(tree->specific_kind.Param.id);
+          printTree(tree->specific_kind.Param.type_specifier);
           break;
         default:
           fprintf(listing,"Unknown ParamK kind\n");
@@ -474,50 +447,57 @@ void printTree( TreeNode * tree )
       }
     }
     else if (tree->nodekind == StmtK)
-    
     { 
-        printf("STmt\n");
-        switch (tree->specific_kind.Stmt.kind) {
-        case expK : 
-          printf("expression Statement \n");
-          printTree(tree->specific_kind.Stmt.exp);
-        case CompoundK:
-          printf("Compound Statement \n");
-          printTree(tree->specific_kind.Stmt.local_declarations);         
-          printTree(tree->specific_kind.Stmt.stmt_list);
-          break;
-        case SelectK:
-          printf("Select Statement \n");
-          printTree(tree->specific_kind.Stmt.exp);
-          printTree(tree->specific_kind.Stmt.if_stmt);
-          printTree(tree->specific_kind.Stmt.else_stmt);
-          break;
-        case IterK:
-          printf("Iteration Statement \n");
-          printTree(tree->specific_kind.Stmt.exp);
-          printTree(tree->specific_kind.Stmt.loop_stmt);
-          break;
-        case RetK:
-          printf("Return Statement \n");
-          printTree(tree->specific_kind.Stmt.exp);
-          break;
-        default:
-          fprintf(listing,"Unknown Stmt kind\n");
-          break;
+        switch (tree->specific_kind.Stmt.kind)
+        {
+          case expK : 
+            printTree(tree->specific_kind.Stmt.exp);
+          case CompoundK:
+            printf("Compound Statement \n");
+          //  if (tree->specific_kind.Stmt.local_declarations)
+           printf("sdasd \n");
+            printTree(tree->specific_kind.Stmt.local_declarations);  
+            printf("sdasadjkasldjasklsd \n");
+       
+            printTree(tree->specific_kind.Stmt.stmt_list);
+            break;
+          case SelectK:
+            printf("If\n");
+            printTree(tree->specific_kind.Stmt.exp);
+            printTree(tree->specific_kind.Stmt.if_stmt);
+            printTree(tree->specific_kind.Stmt.else_stmt);
+            break;
+          case IterK:
+            printf("Iteration Statement \n");
+            printTree(tree->specific_kind.Stmt.exp);
+            printTree(tree->specific_kind.Stmt.loop_stmt);
+            break;
+          case RetK:
+            printf("Return Statement \n");
+            printTree(tree->specific_kind.Stmt.exp);
+            break;
+          default:
+            fprintf(listing,"Unknown Stmt kind\n");
+            break;
       }
     }
     else if (tree->nodekind == ExpK)
-    {       printf("Exp\n");
-
+    {    
       switch (tree->specific_kind.Exp.kind) {
         case AssignK:
-          printf("Assignment Statement \n");
+          printf("Assign : = \n");
+          // printTree(tree->specific_kind.Exp.op);   
           printTree(tree->specific_kind.Exp.left_exp);
-          printTree(tree->specific_kind.Exp.op);   
           printTree(tree->specific_kind.Exp.right_exp);
           break;
         case SimpleK:
-          printf("Simple Statement \n");
+          printf("Simple Expression \n");
+          printTree(tree->specific_kind.Exp.left_exp);
+          printTree(tree->specific_kind.Exp.op);   
+          printTree(tree->specific_kind.Exp.right_exp);         
+          break;
+        case AddictiveK:
+          printf("Additive Expression \n");
           printTree(tree->specific_kind.Exp.left_exp);
           printTree(tree->specific_kind.Exp.op);   
           printTree(tree->specific_kind.Exp.right_exp);         
@@ -528,14 +508,14 @@ void printTree( TreeNode * tree )
       }
     }
     else if (tree->nodekind == TypeK)
-    {       printf("Type\n");
-
+    {  
+      printf("Type : ");
       switch (tree->specific_kind.Type.kind) {
         case IntK:
-        printf("INT type\n");         
+        printf("int\n");         
           break;
         case VoidK:
-        printf("Void type\n");         
+        printf("void \n");         
           break;
         default:
           fprintf(listing,"Unknown Type kind\n");
@@ -543,19 +523,18 @@ void printTree( TreeNode * tree )
       }
     }
     else if (tree->nodekind == OpK)
-    {      printf("Opk\n");
-
-        printf("OP\n");
-        printf("%s\n", tree->specific_kind.Op.op);
+    {   
+      printf("Operator : ");
+      printf("%s\n", tree->specific_kind.Op.op);
     }
     else if (tree->nodekind == IdK)
     { 
-      printf("Id\n");
+      if (tree->specific_kind.ID.kind == IsNewline) printf("Variable : ");
       printf("%s\n", tree->specific_kind.ID.id);
     }
     else if (tree->nodekind == NumK)
     { 
-      printf("NUm\n");
+      printf("Constant : ");
       printf("%d\n", tree->specific_kind.Num.num);
     }
     else fprintf(listing,"Unknown Extra node kind\n");

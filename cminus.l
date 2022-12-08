@@ -3,7 +3,6 @@
 /* Lex specification for C-                         */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
-/* Modified by Kwanghee Choi                        */
 /****************************************************/
 
 %option noyywrap
@@ -16,8 +15,7 @@
 char tokenString[MAXTOKENLEN+1];
 %}
 
-%x COMMENT
-
+%x COMMENTS
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
@@ -27,14 +25,15 @@ whitespace  [ \t]+
 
 %%
 
-"/*"                { BEGIN(COMMENT); }
-<COMMENT>"*/"       { BEGIN(INITIAL); }
-<COMMENT>.          { /* skip comments */ }
-<COMMENT>{newline}  { lineno++; }
-<COMMENT><<EOF>>    { BEGIN(INITIAL); return ERROR; }
-"*/"                { return ERROR; }
 <<EOF>>             { return ENDFILE; }
-
+"/*"                { BEGIN(COMMENTS); }
+<COMMENTS>"*/"      { BEGIN(INITIAL); }
+"*/"                { return ERROR; }
+<COMMENTS>.         { }
+<COMMENTS><<EOF>>   { BEGIN(INITIAL); 
+                      return ERROR; 
+                    }
+<COMMENTS>{newline} { lineno++; }
 
 
 "if"            {return IF;}
@@ -62,32 +61,28 @@ whitespace  [ \t]+
 "]"             {return RBRACKET;}
 ";"             {return SEMI;}
 ","             {return COMMA;}
-
-{number}            { return NUM; }
-{identifier}        { return ID; }
-{newline}           { lineno++; }
-{whitespace}        { /* skip whitespace */ }
+{number}        {return NUM;}
+{identifier}    {return ID;}
+{newline}       {lineno++;}
+{whitespace}    {/* skip whitespace */}
 
 %%
 
-TokenType
-getToken(void)
-{
-  static int firstTime = TRUE;
+TokenType getToken(void)
+{ static int firstTime = TRUE;
   TokenType currentToken;
   if (firstTime)
-    {
-      firstTime = FALSE;
-      lineno++;
-      yyin = source;
-      yyout = listing;
-    }
+  { firstTime = FALSE;
+    lineno++;
+    yyin = source;
+    yyout = listing;
+  }
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
-  if (TraceScan)
-    {
-      fprintf(listing,"\t%d\t\t\t",lineno);
-      printToken(currentToken,tokenString);
-    }
+  if (TraceScan) {
+
+    if (currentToken != COMMENT) fprintf(listing,"\t\t%d ",lineno);
+    printToken(currentToken,tokenString);
+  }
   return currentToken;
 }

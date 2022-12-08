@@ -65,7 +65,7 @@ main( int argc, char * argv[] )
   }
 
   listing = stdout; /* send listing to screen */
-  //  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
+  fprintf(listing,"TINY COMPILATION: %s\n",pgm);
 
   /*for (int i = 0 ;i < strlen(pgm2) ; i++) 
   {

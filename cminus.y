@@ -4,6 +4,7 @@
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
 /****************************************************/
+
 %{
 #define YYPARSER /* distinguishes Yacc output from other code files */
 
@@ -12,18 +13,14 @@
 #include "scan.h"
 #include "parse.h"
 
-
 #define YYSTYPE TreeNode *
-
 //static char * savedName; /* for use in assignments */
 //static int savedLineNo;  /* ditto */
-static TreeNode * savedTree; /* stores syntax tree for later return */
 
+static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
 static int yyerror(char * message);
 %}
-
-
 
 %token IF ELSE INT VOID RETURN WHILE  
 %token ID NUM 
@@ -39,11 +36,10 @@ static int yyerror(char * message);
 %nonassoc RPAREN 
 %nonassoc ELSE
 
-
 %% /* Grammar for TINY */
 
 program               : declaration_list
-                        { savedTree = $1;} 
+                      { savedTree = $1; } 
                       ;
 declaration_list :    declaration_list declaration 
                       { $$ = add_sibling($1, $2);}
@@ -59,13 +55,15 @@ var_declaration : type_specifier id SEMI
                   {
                     $$ = node_initialize();
                     declare_var($$, $1, $2);
+                    set_id_type($2, FALSE);
                   }
                  | type_specifier id LBRACKET num RBRACKET SEMI 
                   {
                       $$ = node_initialize();
                       declare_array($$, $1, $2, $4);
+                      set_id_type($2, FALSE);
                   }
-                   ;
+                  ;
 type_specifier :  INT 
                   { 
                     $$ = node_initialize();
@@ -81,6 +79,7 @@ fun_declaration :  type_specifier id LPAREN params RPAREN compound_stmt
                   {
                     $$ = node_initialize();
                     declare_func($$,$1,$2,$4,$6);
+                    set_id_type($2, FALSE);
                   }
                   ;
 params : param_list 
@@ -88,22 +87,26 @@ params : param_list
         | VOID 
         { $$ = NULL;}
         ;
+
 param_list : param_list COMMA param 
              {
                $$ = add_sibling($1, $3);
              }
               | param 
-                { $$ = $1; }
+              { $$ = $1; }
               ;
+
 param : type_specifier id
         {
           $$ = node_initialize();
           set_node_var_param($$, $1, $2);
+          set_id_type($2,FALSE);
         }
         | type_specifier id LBRACKET RBRACKET
         {
           $$ = node_initialize();
           set_node_array_param($$, $1, $2);
+          set_id_type($2,FALSE);
         }
         ;
 compound_stmt : LBRACE local_declarations stmt_list RBRACE
@@ -234,7 +237,7 @@ relop : EQ
 additive_expression : additive_expression addop term 
                       {
                         $$ = node_initialize();
-                        set_node_exp_simple($$, $1, $2, $3);
+                        set_node_exp_addictive($$, $1, $2, $3);
                       }
                       | term { $$ = $1; }
                       ;
@@ -248,6 +251,7 @@ addop : PLUS
         $$ = node_initialize();
         set_node_op($$, MINUS);
       };
+
 term : term mulop factor 
     { 
       $$ = node_initialize();
@@ -256,6 +260,7 @@ term : term mulop factor
     | factor 
     { $$ = $1;}
     ; 
+
 mulop : TIMES 
       {
         $$ = node_initialize();
@@ -276,7 +281,6 @@ factor : LPAREN expression RPAREN
 num   :  NUM 
       {
         $$ = node_initialize();
-        //printf("number number %s\n", tokenString);
         set_node_num($$,tokenString);
       }
       ;
@@ -321,8 +325,8 @@ static int yylex(void)
 { 
   int token = getToken();
   if (token == EOF ) {token = ENDFILE;}
-  fprintf(listing,"hello ~%d %s\n", token, tokenString);
-  fprintf(listing,"Debug: %d\n", token);
+  //fprintf(listing,"hello ~%d %s\n", token, tokenString);
+  //fprintf(listing,"Debug: %d\n", token);
 
   return token; 
 }
