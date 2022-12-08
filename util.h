@@ -35,5 +35,27 @@ char * copyString( char * );
  * listing file using indentation to indicate subtrees
  */
 void printTree( TreeNode * );
+TreeNode * node_initialize();
+TreeNode* add_sibling(TreeNode *node, TreeNode* new_node);
+void set_node_id(TreeNode *node,  char * id);
+void set_node_type(TreeNode *node, TypeKind type);
+void declare_var(TreeNode * node, TreeNode * type, TreeNode *id);
+void declare_array(TreeNode * node,TreeNode * type, TreeNode *id, TreeNode * num );
+void set_node_array(TreeNode * node,TreeNode * type, TreeNode *id );
+void declare_func(TreeNode *node, TreeNode* type, TreeNode * id, TreeNode * params , TreeNode* compound_stmt);
+void set_node_var_param(TreeNode * node,  TreeNode * type,  TreeNode * id);
+void set_node_exp(TreeNode * node,  TreeNode * exp);
+void set_node_exp_assign(TreeNode* node, TreeNode *var, TreeNode * exp);
+void set_node_exp_simple(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp);
+void set_node_array_param(TreeNode * node, TreeNode * type,  TreeNode * id);
+void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  TreeNode * stmt_list);
+void set_node_selection(TreeNode* node, TreeNode* exp,  TreeNode* if_stmt , TreeNode* else_stmt);
+void set_node_iteration(TreeNode *node, TreeNode * exp , TreeNode *loop_stmt );
+void set_node_return(TreeNode *node, TreeNode * exp);
+ char * token_to_char( TokenType op);
+void set_node_op(TreeNode * node , TokenType op );
+void set_node_num (TreeNode* node , char * string) ;
+void set_node_call_func(TreeNode *node , TreeNode *id , TreeNode * args);
+
 
 #endif

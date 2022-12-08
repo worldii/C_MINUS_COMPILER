@@ -24,28 +24,28 @@
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE,ERROR,
-    /* reserved words */
-    IF,ELSE,INT, VOID, RETURN, WHILE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    PLUS,MINUS,TIMES,OVER,
-    LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
-    SEMI,COMMA, 
-    LPAREN,RPAREN, // ()
-    LBRACKET, RBRACKET, // []
-    LBRACE,RBRACE, // {}, 
-    COMMENT, COMMENTERR
-   } TokenType;
+// typedef enum 
+//     /* book-keeping tokens */
+//    {ENDFILE,ERROR,
+//     /* reserved words */
+//     IF,ELSE,INT, VOID, RETURN, WHILE,
+//     /* multicharacter tokens */
+//     ID,NUM,
+//     /* special symbols */
+//     PLUS,MINUS,TIMES,OVER,
+//     LT, LE, GT, GE, EQ, NOTEQ,ASSIGN,
+//     SEMI,COMMA, 
+//     LPAREN,RPAREN, // ()
+//     LBRACKET, RBRACKET, // []
+//     LBRACE,RBRACE, // {}, 
+//     COMMENT, COMMENTERR
+//    } TokenType;
 
 
-// #ifndef YYPARSER
-// #include "cminus.tab.h"
-// #endif
-// typedef int TokenType;
+#ifndef YYPARSER
+#include "cminus.tab.h"
+#endif
+typedef int TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -146,14 +146,7 @@ typedef struct treeNode
          ExpKind kind;
          struct treeNode * left_exp;
          struct treeNode * right_exp;
-         union {
-            // OpK
-            struct treeNode * op;
-            // AssignK
-            //struct treeNode * assign;
-            // CompareK;
-            //struct treeNode * compare;
-         };
+         struct treeNode * op;
       }Exp;
 
       struct {

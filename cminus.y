@@ -23,6 +23,8 @@ static int yylex(void);
 static int yyerror(char * message);
 %}
 
+
+
 %token IF ELSE INT VOID RETURN WHILE  
 %token ID NUM 
 %token EQ LT LE GT GE NOTEQ ASSIGN
@@ -33,6 +35,7 @@ static int yyerror(char * message);
 %token ENDFILE
 %token COMMENTERR COMMENT
 %token ERROR
+
 %nonassoc RPAREN 
 %nonassoc ELSE
 
@@ -57,7 +60,7 @@ var_declaration : type_specifier id SEMI
                     $$ = node_initialize();
                     declare_var($$, $1, $2);
                   }
-                 | type_specifier id LBRACKET NUM RBRACKET SEMI 
+                 | type_specifier id LBRACKET num RBRACKET SEMI 
                   {
                       $$ = node_initialize();
                       declare_array($$, $1, $2, $4);
@@ -200,32 +203,32 @@ simple_expression : additive_expression relop additive_expression
 relop : EQ 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, EQ);
       }
       | LT 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, LT);
       }
       | LE
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, LE);
       } 
       | GT 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, GT);
       }
       | GE 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, GE);
       }
       | NOTEQ
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, NOTEQ);
       };
 
 additive_expression : additive_expression addop term 
@@ -238,12 +241,12 @@ additive_expression : additive_expression addop term
 addop : PLUS  
       {    
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, PLUS);
       }
       | MINUS
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, MINUS);
       };
 term : term mulop factor 
     { 
@@ -256,12 +259,12 @@ term : term mulop factor
 mulop : TIMES 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, TIMES);
       }
      |  OVER 
       {
         $$ = node_initialize();
-        set_node_op($$, $1);
+        set_node_op($$, OVER);
       }
      ; 
 factor : LPAREN expression RPAREN 
@@ -273,6 +276,7 @@ factor : LPAREN expression RPAREN
 num   :  NUM 
       {
         $$ = node_initialize();
+        //printf("number number %s\n", tokenString);
         set_node_num($$,tokenString);
       }
       ;
@@ -300,7 +304,9 @@ arg_list : arg_list COMMA expression
 %%
 
 int yyerror(char * message)
-{ 
+{
+  if (yychar == ENDFILE) return 0;
+
   fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
   fprintf(listing,"Current token: ");
   printToken(yychar,tokenString);
@@ -314,10 +320,12 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
+  if (token == EOF ) {token = ENDFILE;}
   fprintf(listing,"hello ~%d %s\n", token, tokenString);
   fprintf(listing,"Debug: %d\n", token);
 
-  return token; }
+  return token; 
+}
 
 TreeNode * parse(void)
 { yyparse();
