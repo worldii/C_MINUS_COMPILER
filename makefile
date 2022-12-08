@@ -1,28 +1,26 @@
-CC=gcc
-CFLAGS=-c -Wall -O3
-EXEC= hw2_binary
+#
+# makefile for TINY
+# Borland C Version
+# K. Louden 2/3/98
+#
 
-.SUFFIXES: .c .o
+CC = gcc 
+CFLAGS=-c -Wall -O3 
 
-LEXCODE=cminus.l
-LEXSRC=cminus.lex.c
+SRCS=main.c util.c cminus.lex.c cminus.tab.c
+OBJS=main.o util.o cminus.lex.o cminus.tab.o
 
-BISONCODE=cminus.y
-BISONSRC=cminus.tab.c
-BISONHDR=cminus.tab.h
-BISONVERBOSE=cminus.output
-
-SRCS=main.c util.c $(LEXSRC) $(BISONSRC)
-OBJS=$(SRCS:.c=.o)
-
-$(EXEC): $(LEXSRC) $(BISONSRC) $(OBJS)
+all = hw2_binary
+hw2_binary: cminus.lex.c cminus.tab.c $(OBJS)
 	$(CC) -o $@ $(OBJS)
 
-$(BISONSRC): $(LEXSRC) $(BISONCODE)
-	bison -o $(BISONSRC) -vd $(BISONCODE)
+cminus.tab.c: cminus.lex.c cminus.y
+	bison -o cminus.tab.c -vd cminus.y
 
-$(LEXSRC): $(LEXCODE)
-	flex -o $(LEXSRC) $(LEXCODE)
+cminus.lex.c: cminus.l
+	flex -o cminus.lex.c cminus.l
 
 clean:
-	rm -f $(OBJS) $(EXEC) $(LEXSRC) $(BISONSRC) $(BISONHDR) $(BISONVERBOSE)
+	rm -f $(OBJS) cminus.lex.c cminus.tab.c cminus.tab.h cminus.output
+fclean : clean 
+	rm -rf hw2_binary 

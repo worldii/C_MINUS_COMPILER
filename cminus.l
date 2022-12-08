@@ -16,6 +16,7 @@ char tokenString[MAXTOKENLEN+1];
 %}
 
 %x COMMENTS
+
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
@@ -24,13 +25,13 @@ newline     \n
 whitespace  [ \t]+
 
 %%
-
 <<EOF>>             { return ENDFILE; }
 "/*"                { BEGIN(COMMENTS); }
 <COMMENTS>"*/"      { BEGIN(INITIAL); }
 "*/"                { return ERROR; }
 <COMMENTS>.         { }
-<COMMENTS><<EOF>>   { BEGIN(INITIAL); 
+<COMMENTS><<EOF>>   { 
+                      BEGIN(INITIAL); 
                       return ERROR; 
                     }
 <COMMENTS>{newline} { lineno++; }
@@ -80,8 +81,7 @@ TokenType getToken(void)
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
-
-    if (currentToken != COMMENT) fprintf(listing,"\t\t%d ",lineno);
+    fprintf(listing,"\t\t%d ",lineno);
     printToken(currentToken,tokenString);
   }
   return currentToken;

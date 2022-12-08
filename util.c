@@ -52,11 +52,11 @@ void printToken( TokenType token, const char* tokenString )
       break;
     case COMMENTERR:
      fprintf(listing,
-          "\t\t\tERRORsss\t\t\t%s\n","Comment Error");
+          "\t\t\tERROR\t\t\t%s\n","Comment Error");
       break;
     case ERROR:
       fprintf(listing,
-          "\t\t\tERRORccc\t\t\t%s\n",tokenString);
+          "\t\t\tERROR\t\t\t%s\n",tokenString);
       break;
     default: /* should never happen */
       fprintf(listing,"Unknown token: %d\n",token);
@@ -332,16 +332,20 @@ void printTree( TreeNode * tree )
 { 
 
   INDENT;
-  if (tree == NULL) { UNINDENT;return; }
-  for (; tree != NULL; tree = tree->sibling){
-   if (!(tree-> nodekind == StmtK && tree->specific_kind.Stmt.kind ==expK)) {
-    if (tree->nodekind == IdK ){
-        if( tree->specific_kind.ID.kind == IsNewline)
-          printSpaces();
-    }
-    else printSpaces();
-   }
-   // printf("PRINT %d\n",  indentno);
+  if (tree == NULL) {
+     UNINDENT;
+     return;
+  }
+  while (tree) {
+      // SPACE 안해도 되는 것 뺌.
+      if (!(tree-> nodekind == StmtK && tree->specific_kind.Stmt.kind ==expK)) {
+        if (tree->nodekind == IdK ){
+            if( tree->specific_kind.ID.kind == IsNewline)
+              printSpaces();
+        }
+        else printSpaces();
+      }
+    // 조건 검사 ! 
     if (tree->nodekind == DecK)
     {
       switch (tree->specific_kind.Dec.kind) {
@@ -357,7 +361,7 @@ void printTree( TreeNode * tree )
           printTree(tree->specific_kind.Dec.num);
           break;
         case ArrayK2:
-          fprintf(listing,"make Array\n");
+          fprintf(listing,"Array Variable\n");
           printTree(tree->specific_kind.Dec.type_specifier);
           printTree(tree->specific_kind.Dec.id);
           break;
@@ -374,7 +378,7 @@ void printTree( TreeNode * tree )
           printTree(tree->specific_kind.Dec.args_list); 
           break;
         default:
-          fprintf(listing,"Unknown DecNode kind\n");
+          fprintf(listing,"Unknown Declare Node kind\n");
           break;
       }
     }
@@ -393,7 +397,7 @@ void printTree( TreeNode * tree )
           printTree(tree->specific_kind.Param.type_specifier);
           break;
         default:
-          fprintf(listing,"Unknown ParamK kind\n");
+          fprintf(listing,"Unknown Param kind\n");
           break;
       }
     }
@@ -491,7 +495,7 @@ void printTree( TreeNode * tree )
       fprintf(listing,"%d\n", tree->specific_kind.Num.num);
     }
     else fprintf(listing,"Unknown Extra node kind\n");
- 
+    tree = tree -> sibling;
   }
   UNINDENT;
 

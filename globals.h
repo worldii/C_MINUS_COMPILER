@@ -57,8 +57,6 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/
-// selectK : if else 합쳐져 있음
-// Iter : while 문임 
 
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
 typedef enum {expK,CompoundK, SelectK, IterK, RetK,AssignK} StmtKind;

@@ -1,4 +1,4 @@
-int main(int a[])
+int main(int a[], int a)
 {
 	int a;
 	int b;
@@ -6,7 +6,7 @@ int main(int a[])
 	int d;
 	int e;
 	int i ; 
-	int a[20];
+	int a[0];
 	main(2);
 
 	i= 0;
@@ -19,7 +19,7 @@ int main(int a[])
 
 	while (i <5)
 		i = 2;
-
+	b[3] = 2;
 	return 0;
 }
 

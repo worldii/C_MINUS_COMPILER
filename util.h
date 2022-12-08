@@ -52,10 +52,12 @@ void set_node_compound_stmt(TreeNode * node ,TreeNode * local_declarations,  Tre
 void set_node_selection(TreeNode* node, TreeNode* exp,  TreeNode* if_stmt , TreeNode* else_stmt);
 void set_node_iteration(TreeNode *node, TreeNode * exp , TreeNode *loop_stmt );
 void set_node_return(TreeNode *node, TreeNode * exp);
- char * token_to_char( TokenType op);
+char * token_to_char( TokenType op);
 void set_node_op(TreeNode * node , TokenType op );
 void set_node_num (TreeNode* node , char * string) ;
 void set_node_call_func(TreeNode *node , TreeNode *id , TreeNode * args);
-
+void set_id_type(TreeNode * node, Idkind isNewline);
+void set_node_exp_mulop(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp);
+void set_node_exp_addictive(TreeNode* node, TreeNode *var,TreeNode* op,  TreeNode * exp);
 
 #endif

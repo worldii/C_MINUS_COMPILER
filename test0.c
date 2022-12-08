@@ -1,7 +1,6 @@
 int a;
-
-int main(int arg){
+/*dsds*/*/
+void main(int arg){
 	a = a + 1;
-	return 0;
 }
 
