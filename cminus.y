@@ -190,7 +190,7 @@ var : id
         $$ = $1;
 
       }
-    | id LPAREN expression RPAREN
+    | id LBRACKET expression RBRACKET
       {
         $$ = node_initialize();
         set_node_array($$, $1, $3);
@@ -255,7 +255,7 @@ addop : PLUS
 term : term mulop factor 
     { 
       $$ = node_initialize();
-      set_node_exp_simple($$, $1, $2, $3);
+      set_node_exp_mulop($$, $1, $2, $3);
     }
     | factor 
     { $$ = $1;}
@@ -277,7 +277,24 @@ factor : LPAREN expression RPAREN
        | var { $$ = $1; } 
        | call { $$ = $1; }
        | num { $$ = $1;}
-       ; 
+       ;
+
+call : id LPAREN args RPAREN 
+     {
+       $$ = node_initialize();
+       set_node_call_func($$,$1,$3);
+     };
+
+args : arg_list 
+      { $$ = $1; }
+      | //empty 
+      { $$ = NULL; }
+      ; 
+arg_list : arg_list COMMA expression 
+        { $$ = add_sibling($1, $3); }
+        | expression 
+        { $$ = $1;}
+        ;
 num   :  NUM 
       {
         $$ = node_initialize();
@@ -290,21 +307,6 @@ id   : ID
         set_node_id($$, tokenString);
       } 
       ;
-call : id LPAREN args RPAREN 
-     {
-       $$ = node_initialize();
-       set_node_call_func($$,$1,$3);
-     };
-args : arg_list 
-      { $$ = $1; }
-      | //empty 
-      { $$ = NULL; }
-      ; 
-arg_list : arg_list COMMA expression 
-        { $$ = add_sibling($1, $3); }
-        | expression 
-        { $$ = $1;}
-        ;
 %%
 
 int yyerror(char * message)
@@ -324,10 +326,9 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
-  if (token == EOF ) {token = ENDFILE;}
+  if (token == EOF ) { token = ENDFILE;}
   //fprintf(listing,"hello ~%d %s\n", token, tokenString);
   //fprintf(listing,"Debug: %d\n", token);
-
   return token; 
 }
 

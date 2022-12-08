@@ -24,6 +24,7 @@
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
+
 // typedef enum 
 //     /* book-keeping tokens */
 //    {ENDFILE,ERROR,
@@ -60,8 +61,8 @@ extern int lineno; /* source line number for listing */
 // Iter : while 문임 
 
 typedef enum {StmtK,ExpK, DecK, ParamK, TypeK, IdK, VariK, NumK, OpK} NodeKind;
-typedef enum {expK,CompoundK, SelectK, IterK, RetK} StmtKind;
-typedef enum {AssignK, SimpleK, AddictiveK} ExpKind;
+typedef enum {expK,CompoundK, SelectK, IterK, RetK,AssignK} StmtKind;
+typedef enum {SimpleK, AddictiveK, MulopK} ExpKind;
 typedef enum {VarK, ArrayK, ArrayK2, FunK, CallK}DecKind;
 typedef enum {VarParamK, ArrayParamK} Paramkind;
 typedef enum {IntK ,VoidK} TypeKind;
@@ -76,16 +77,14 @@ typedef struct treeNode
    NodeKind nodekind;
    
    union {
-      // DecK 
-      // DECLARE -> function, array ,var 
+      // DecK  (FunK ,CallK, Array ,ArrayK2, VarK)
       struct {
          DecKind kind;
-         // var 
          struct treeNode * type_specifier;
          struct treeNode * id;
          union {
-            struct treeNode * num; // ARRAY ; 
-            struct { // FUNCTIon 
+            struct treeNode * num;  
+            struct { 
                struct treeNode * params;
                struct treeNode *compound_stmt;
             }; 
@@ -125,10 +124,12 @@ typedef struct treeNode
                struct treeNode * else_stmt;
             };
             struct treeNode * loop_stmt; // loop;
+            struct treeNode * var;
          } ;
       }Stmt;
 
       //StmtK,ExpK, DecK, ParamK, TypeK
+
       struct {
          ExpKind kind;
          struct treeNode * left_exp;
@@ -146,7 +147,6 @@ typedef struct treeNode
       { 
          TypeKind kind;
       }Type;
-
       struct {
          char op[3];
       } Op;
@@ -158,6 +158,7 @@ typedef struct treeNode
    }specific_kind;
 
 }TreeNode;
+
 /**************************************************/
 /***********   Flags for tracing       ************/
 /**************************************************/
