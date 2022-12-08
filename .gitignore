@@ -1,5 +1,4 @@
 *.zip
 *.o
 *.exe
-*.txt
 lex.yy.c
