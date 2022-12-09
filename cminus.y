@@ -315,8 +315,7 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
-  if (token == ENDFILE || token == ERROR) return 0;
-
+  if (token == ENDFILE ) return 0;
   /*fprintf(listing,"hello ~%d %s\n", token, tokenString);
   fprintf(listing,"Debug: %d\n", token);*/
   return token; 

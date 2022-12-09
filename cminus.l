@@ -15,7 +15,7 @@
 char tokenString[MAXTOKENLEN+1];
 %}
 
-%x COMMENT
+%x COMMENTS
 
 digit       [0-9]
 number      {digit}+
@@ -26,14 +26,14 @@ whitespace  [ \t]+
 
 %%
 
-"/*"                { BEGIN(COMMENT); }
-<COMMENT>"*/"       { BEGIN(0); }
-<COMMENT>{newline}  { lineno++; }
-<COMMENT><<EOF>>    {  return ERROR; }
-<COMMENT>.          { /* skip comments */ }
-"*/"                { return ERROR; }
-<<EOF>>             { return ENDFILE; }
 
+"/*"                { BEGIN(COMMENTS); }
+<COMMENTS>"*/"       { BEGIN(0); }
+<COMMENTS>{newline}  { lineno++; }
+<COMMENTS><<EOF>>    {  return COMMENTERR; }
+<COMMENTS>.          { }
+"*/"                { return COMMENTERR; }
+<<EOF>>             { return ENDFILE; }
 
 "if"            {return IF;}
 "else"          {return ELSE;}

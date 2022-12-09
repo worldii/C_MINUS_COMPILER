@@ -24,9 +24,6 @@
 
 void printToken( TokenType token, const char* tokenString )
 { 
-   if (token == COMMENT)
-    return;
- fprintf(listing,"hehe %d %s", token, tokenString);
   switch (token)
   { 
     case IF:      case ELSE:
@@ -59,7 +56,7 @@ void printToken( TokenType token, const char* tokenString )
           "\t\t\tERROR\t\t\t%s\n",tokenString);
       break;
     default: /* should never happen */
-      fprintf(listing,"Unknown token: %d\n",token);
+      fprintf(listing,"Unknown token String: %s, token %d \n",tokenString,  token);
   }
 }
 
