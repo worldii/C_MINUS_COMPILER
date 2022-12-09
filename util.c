@@ -26,7 +26,7 @@ void printToken( TokenType token, const char* tokenString )
 { 
    if (token == COMMENT)
     return;
- // fprintf(listing,"hehe %d %s", token, tokenString);
+ fprintf(listing,"hehe %d %s", token, tokenString);
   switch (token)
   { 
     case IF:      case ELSE:
@@ -260,7 +260,7 @@ void set_node_return(TreeNode *node, TreeNode * exp){
 
     default : 
       fprintf(listing, "TOKEN ERROR \n");
-      return "";
+      exit(-1);
   }
 }
 

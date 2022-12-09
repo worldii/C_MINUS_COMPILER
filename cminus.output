@@ -7,6 +7,7 @@ Terminals unused in grammar
 
 
 State 58 conflicts: 1 shift/reduce
+State 98 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -1220,6 +1221,7 @@ State 98
 
     ELSE  shift, and go to state 101
 
+    ELSE      [reduce using rule 29 (selection_stmt)]
     $default  reduce using rule 29 (selection_stmt)
 
 

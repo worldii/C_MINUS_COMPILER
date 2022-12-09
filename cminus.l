@@ -15,7 +15,7 @@
 char tokenString[MAXTOKENLEN+1];
 %}
 
-%x COMMENTS
+%x COMMENT
 
 digit       [0-9]
 number      {digit}+
@@ -25,16 +25,14 @@ newline     \n
 whitespace  [ \t]+
 
 %%
-<<EOF>>             { return ENDFILE; }
-"/*"                { BEGIN(COMMENTS); }
-<COMMENTS>"*/"      { BEGIN(INITIAL); }
+
+"/*"                { BEGIN(COMMENT); }
+<COMMENT>"*/"       { BEGIN(0); }
+<COMMENT>{newline}  { lineno++; }
+<COMMENT><<EOF>>    {  return ERROR; }
+<COMMENT>.          { /* skip comments */ }
 "*/"                { return ERROR; }
-<COMMENTS>.         { }
-<COMMENTS><<EOF>>   { 
-                      BEGIN(INITIAL); 
-                      return ERROR; 
-                    }
-<COMMENTS>{newline} { lineno++; }
+<<EOF>>             { return ENDFILE; }
 
 
 "if"            {return IF;}
@@ -64,25 +62,28 @@ whitespace  [ \t]+
 ","             {return COMMA;}
 {number}        {return NUM;}
 {identifier}    {return ID;}
-{newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
+{newline}           { lineno++; }
 
 %%
 
 TokenType getToken(void)
-{ static int firstTime = TRUE;
+{ 
+  static int firstTime = TRUE;
   TokenType currentToken;
   if (firstTime)
-  { firstTime = FALSE;
+  { 
+    firstTime = FALSE;
     lineno++;
     yyin = source;
-    yyout = listing;
+    yyout = stdout;
   }
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
-    fprintf(listing,"\t\t%d ",lineno);
+    fprintf(listing,"%d ",lineno);
     printToken(currentToken,tokenString);
   }
+  
   return currentToken;
 }

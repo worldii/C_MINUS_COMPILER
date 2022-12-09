@@ -18,7 +18,7 @@ cminus.tab.c: cminus.lex.c cminus.y
 	bison -o cminus.tab.c -vd cminus.y
 
 cminus.lex.c: cminus.l
-	flex -o cminus.lex.c cminus.l
+	flex -o cminus.lex.c cminus.l 
 
 clean:
 	rm -f $(OBJS) cminus.lex.c cminus.tab.c cminus.tab.h cminus.output

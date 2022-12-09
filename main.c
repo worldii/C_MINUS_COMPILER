@@ -38,7 +38,7 @@ FILE * listing;
 FILE * code;
 
 /* allocate and set tracing flags */
-int EchoSource = TRUE;
+int EchoSource = FALSE;
 int TraceScan = TRUE;
 int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
@@ -58,7 +58,7 @@ main( int argc, char * argv[] )
   if (strchr (pgm, '.') == NULL)
      strcat(pgm,".tny");
   if (strcmp (argv[1], "test1.c")) {
-    fprintf(stderr,"Input file name is different.\n");
+    fprintf(stderr,"Input file name is different. the file name is %s\n",argv[1]);
     exit(1);
   }
 
@@ -80,22 +80,26 @@ main( int argc, char * argv[] )
     }
   }*/
 
-//listing = fopen("test1_20182202.txt", "wt");
-listing = stdout;
-fprintf(listing,"TINY COMPILATION: test2.c\n");
+  listing = fopen("test1_20182202.txt", "w");
+
 
 
 #if NO_PARSE
+  listing = stdout;
   fprintf(listing,"TINY COMPILATION: hw1_20182202.txt\n");
   fprintf(listing,"    line number		token		lexeme\n");
   fprintf(listing,"================================================================================\n");
   while (getToken()!=ENDFILE);
+
 #else
+
+  fprintf(listing,"TINY COMPILATION: test1.c\n");
   syntaxTree = parse();
   if (TraceParse) {
-    fprintf(listing,"Syntax tree:\n");
+    fprintf(listing,"\nSyntax tree:\n");
     printTree(syntaxTree);
   }
+  
 #if !NO_ANALYZE
   if (! Error)
   { if (TraceAnalyze) fprintf(listing,"\nBuilding Symbol Table...\n");

@@ -14,9 +14,6 @@
 #include "parse.h"
 
 #define YYSTYPE TreeNode *
-//static char * savedName; /* for use in assignments */
-//static int savedLineNo;  /* ditto */
-
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
 static int yyerror(char * message);
@@ -33,7 +30,7 @@ static int yyerror(char * message);
 %token COMMENTERR COMMENT
 %token ERROR
 
-%nonassoc RPAREN 
+%nonassoc LPAREN
 %nonassoc ELSE
 
 %% /* Grammar for TINY */
@@ -233,7 +230,6 @@ relop : EQ
         $$ = node_initialize();
         set_node_op($$, NOTEQ);
       };
-
 additive_expression : additive_expression addop term 
                       {
                         $$ = node_initialize();
@@ -251,7 +247,6 @@ addop : PLUS
         $$ = node_initialize();
         set_node_op($$, MINUS);
       };
-
 term : term mulop factor 
     { 
       $$ = node_initialize();
@@ -260,7 +255,6 @@ term : term mulop factor
     | factor 
     { $$ = $1;}
     ; 
-
 mulop : TIMES 
       {
         $$ = node_initialize();
@@ -278,13 +272,11 @@ factor : LPAREN expression RPAREN
        | call { $$ = $1; }
        | num { $$ = $1;}
        ;
-
 call : id LPAREN args RPAREN 
      {
        $$ = node_initialize();
        set_node_call_func($$,$1,$3);
      };
-
 args : arg_list 
       { $$ = $1; }
       | //empty 
@@ -308,10 +300,8 @@ id   : ID
       } 
       ;
 %%
-
 int yyerror(char * message)
 {
-  if (yychar == ENDFILE) return 0;
   fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
   fprintf(listing,"Current token: ");
   printToken(yychar,tokenString);
@@ -325,9 +315,10 @@ int yyerror(char * message)
 static int yylex(void)
 { 
   int token = getToken();
-  if (token == EOF ) { token = ENDFILE;}
-  //fprintf(listing,"hello ~%d %s\n", token, tokenString);
-  //fprintf(listing,"Debug: %d\n", token);
+  if (token == ENDFILE || token == ERROR) return 0;
+
+  /*fprintf(listing,"hello ~%d %s\n", token, tokenString);
+  fprintf(listing,"Debug: %d\n", token);*/
   return token; 
 }
 
