@@ -247,6 +247,7 @@ void set_node_return(TreeNode *node, TreeNode * exp){
     case LT : return "<";
     case LE : return "<=";
     case GT : return ">";
+    case GE : return ">=";
     case NOTEQ : return "!=";
     case ASSIGN : return "=";
 
@@ -257,7 +258,8 @@ void set_node_return(TreeNode *node, TreeNode * exp){
 
     default : 
       fprintf(listing, "TOKEN ERROR \n");
-      exit(-1);
+      printf("%d",op);
+     // exit(-1);
   }
 }
 
